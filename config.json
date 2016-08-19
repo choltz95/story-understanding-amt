@@ -1,0 +1,6 @@
+{
+  "rendered_template_directory" : "rendered_templates",
+  "template_directories": [ "hit_templates" ],
+  "aws_access_key": "AKIAIWK2UL2KSTIQ2K4A",
+  "aws_secret_key": "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"
+}

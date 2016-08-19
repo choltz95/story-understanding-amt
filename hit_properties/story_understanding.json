@@ -1,0 +1,10 @@
+{
+  "title": "Story Understanding",
+  "description": "Highlight important components of the text.",
+  "keywords": "story,understanding,write,writing,sentence",
+  "reward": 0.05,
+  "duration": 900,
+  "frame_height": 20000,
+  "max_assignments": 1,
+  "country": "US"
+}

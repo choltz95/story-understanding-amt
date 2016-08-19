@@ -1,0 +1,180 @@
+<html>
+  <head>
+    <!-- amt depends on these libraries -->
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>
+    <!-- get text selection -->
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery.selection/1.0.1/jquery.selection.min.js'></script>
+    <!-- end of required libraries -->
+    <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js'></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      #text-area {
+        margin: 10px 0;
+        font-size: 10pt;
+        min-height: 100px;
+        cursor: text;
+      }
+      #story {
+        margin: 10px 0;
+        font-size: 10pt;
+        min-height: 150px;
+        cursor: text;
+      }
+      #button-div {
+        margin-bottom: 10px;
+      }
+      #counter {
+        margin: 0 10px;
+        font-size: 16pt;
+        font-weight: bold;
+      }
+      #instructions {
+        margin: 10px 0;
+        font-size: 9pt;
+        min-height: 55px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='containier-fluid'>
+      <center><h2>Highlight the relevent phrases of the story...</h2></center>
+      <div class='col-xs-4 col-xs-offset-4 text-center' id='instruction-div'>
+        <div class='row text-center text-center' id='instruction-container' style='border:1px solid black;'>
+          <ul style="text-align: left">
+            <li>You must accept this HIT before you can submit it.</li>
+            <li>Highlight the most significant phrase in the text.</li>
+            <li>Highlight only complete phrases (no partial words).</li>
+          </ul>    
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-xs-4 col-xs-offset-4 text-center'>
+          <div id='story-container'>
+             <textarea id='story' class='form-control tb-margin' readonly></textarea>
+          </div>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col-xs-4 col-xs-offset-4'>
+          <textarea id='text-area' class='form-control tb-margin' disabled></textarea>
+        </div>
+        <div class='col-xs-4 col-xs-offset-4 text-center' id='button-div'>
+          <button id='prev-btn' class='btn btn-lg btn-primary' disabled>Back</button>
+          <span id='counter'>
+            <span class='counter-top'></span> / <span class='counter-bottom'></span>
+          </span>
+          <button id='next-btn' class='btn btn-lg btn-primary' disabled>Next</button>
+        </div>
+      </div> 
+    </div>
+  
+    {% include "amt.html" %}
+
+    <script>
+      $(function() {
+        // Default input to be used during development.
+        var DEFAULT_INPUT = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                            'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.'];
+        var input = null;
+        var descriptions = [];
+        var idx = 0;
+        var enabled = false;
+        function main() {
+          // Read input to the HIT. In development the default input will be
+          // used, and in deployment actual input will be used.
+          input = amt.getInput(DEFAULT_INPUT);
+          
+          // Set up the descriptions.
+          _.each(input, function() { descriptions.push(''); });
+          
+          // If the HIT is not in preview mode, then we need to enable the UI
+          // and set up the logic for submitting.
+          if (!amt.isPreview()) {
+            enable_hit();
+          }
+            render();
+        }
+
+        // Use the current index to update the image and description
+        function render() {
+          // Set up the story
+          $('#story').val('');
+          $('#story').val(input[idx]);
+     
+          // Set up the text area
+          $('#text-area').val(descriptions[idx]);
+
+          // Refresh the counter
+          $('.counter-top').text(idx + 1);
+          $('.counter-bottom').text(input.length);
+
+          // If the UI is enabled, enable or disable the buttons depending on
+          // the index.
+          if (enabled) {
+            var prev_btn = $('#prev-btn');
+            var next_btn = $('#next-btn');
+            prev_btn.prop('disabled', true);
+            next_btn.prop('disabled', true);
+            if (idx > 0) {
+              prev_btn.prop('disabled', false);
+            }
+            if (idx < input.length - 1) next_btn.prop('disabled', false);
+          }
+        }
+
+        // Update the index, and save the text in the text area.
+        function set_idx(new_idx) {
+          if (new_idx < 0 || new_idx >= input.length) return;
+          idx = new_idx;
+          render();
+        }
+
+        function enable_hit() {
+          // Enable the UI.
+          enabled = true;
+
+          // Enable the submit button. You must do this in every HIT.
+          $('#submit-btn').prop('disabled', false);
+          $('#next-btn').click(function() { set_idx(idx + 1) });
+          $('#prev-btn').click(function() { set_idx(idx - 1) });
+
+          // submit turk and get HIT id
+          amt.setupSubmit();
+
+          // Set up a click handler for the submit button.
+          $('#submit-btn').click(function() {
+            // Construct an object containing the output.
+            // Output consists of set of tuples (string story, string selection)
+            $('#text-area').val(descriptions[idx]);
+
+            // Validate the output
+            if (_.any(descriptions, function(d) { return d.length < 10; })) {
+              alert('Selections should exceed three words. Correct before submitting.');
+              return false;
+            } else {
+                var output = _.map(_.zip(input, descriptions), function(x) {
+                  return {'story': x[0], 'description': x[1]};
+                });
+                amt.setOutput(output);
+            }
+          });
+        }
+
+        // Detect text-selection event
+        $('#story-container').click(function(e) {
+          var selected_text = $('#story').selection().trim();
+          if (false) { // ensure first and last words are not cut off.
+            alert('Selected text must be a complete phrase (no partial words)');
+          } else {
+            descriptions[idx] = selected_text;
+            $('#text-area').val(selected_text);
+          }
+        });
+
+        main();
+      });
+    </script>
+  </body>
+</html>
