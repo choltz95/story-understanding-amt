@@ -1,6 +1,7 @@
 <html>
   <head>
     <!-- amt depends on these libraries -->
+    <script src="http://fb.me/react-0.10.0.min.js"></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>
     <!-- get text selection -->
@@ -9,17 +10,27 @@
     <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js'></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src='main.js'></script>
     <style>
+      .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none;   /* Chrome/Safari/Opera */
+        -khtml-user-select: none;    /* Konqueror */
+        -moz-user-select: none;      /* Firefox */
+        -ms-user-select: none;       /* Internet Explorer/Edge */
+        user-select: none;           /* Non-prefixed version */
+      }
       #text-area {
         margin: 10px 0;
         font-size: 10pt;
-        min-height: 100px;
+        min-height: 65px;
         cursor: text;
       }
       #story {
         margin: 10px 0;
         font-size: 10pt;
-        min-height: 150px;
+        min-height: 120px;
         cursor: text;
       }
       #button-div {
@@ -39,28 +50,45 @@
   </head>
   <body>
     <div class='containier-fluid'>
-      <center><h2>Highlight the relevent phrases of the story...</h2></center>
-      <div class='col-xs-4 col-xs-offset-4 text-center' id='instruction-div'>
-        <div class='row text-center text-center' id='instruction-container' style='border:1px solid black;'>
-          <ul style="text-align: left">
-            <li>You must accept this HIT before you can submit it.</li>
-            <li>Highlight the most significant phrase in the text.</li>
-            <li>Highlight only complete phrases (no partial words).</li>
-          </ul>    
-        </div>
-      </div>
+      <h2>Highlight the relevent phrases of the story...</h2>
       <div class='row'>
-        <div class='col-xs-4 col-xs-offset-4 text-center'>
+        <div class='col-md-4' id='instruction-div'>
+          <div id='instruction-container' style='border:1px solid black;'>
+            <ul style="text-align: left">
+              <li>You must accept this HIT before you can submit it.</li>
+              <li>Write the fifth sentence that most likely follows the previous four.</li>
+              <li>Highlight the most significant phrases in the text.</li>
+              <li>Highlight only complete phrases (no partial words).</li>
+            </ul>    
+          </div>
+        </div>
+        <div class='col-xs-4 text-center' style="margin-top:-12px;">
           <div id='story-container'>
              <textarea id='story' class='form-control tb-margin' readonly></textarea>
           </div>
         </div>
       </div>
       <div class='row'>
-        <div class='col-xs-4 col-xs-offset-4'>
+        <div class='col-xs-4'>
           <textarea id='text-area' class='form-control tb-margin' disabled></textarea>
         </div>
-        <div class='col-xs-4 col-xs-offset-4 text-center' id='button-div'>
+      </div>
+      <div class='row'>
+        <div class='col-xs-6 predicate-template' id='predicate-default' style='display:none;'>
+          <textarea id='action' rows="1" maxlength="50">Action</textarea>
+          <select style="margin-top:-10px;">
+            <option value="==>">==&gt</option>
+            <option value="&&">&amp;&amp;</option>
+            <option value="||">||</option>
+          </select>
+          <textarea id='consequence' rows="1" maxlength="50">Consequence</textarea>
+          <button class='btn btn-xs remove-predicate-btn'>-</button>
+          <button class='btn btn-xs add-predicate-btn'>+</button>
+        </div>
+        <div id=predicate-container></div>
+      </div>
+      <div class='row'>
+        <div class='col-xs-4 text-center' id='button-div'>
           <button id='prev-btn' class='btn btn-lg btn-primary' disabled>Back</button>
           <span id='counter'>
             <span class='counter-top'></span> / <span class='counter-bottom'></span>
@@ -68,12 +96,11 @@
           <button id='next-btn' class='btn btn-lg btn-primary' disabled>Next</button>
         </div>
       </div> 
-    </div>
-  
+    </div>  
     <script type='text/json' id='input'>
   
 </script>
-<form id='results-form' method='post' action='dummy' class='text-center'>
+<form id='results-form' method='post' action='dummy' class=' text-center col-xs-4 col-centered'>
   <input type='hidden' value='' name='assignmentId' id='assignmentId'/>
   <input type='hidden' value='' name='output' id='output'/>
   <input type='submit' class='btn btn-lg btn-success' id='submit-btn' value='Submit' disabled/>
@@ -120,110 +147,5 @@
     }
   })();
 </script>
-
-    <script>
-      $(function() {
-        // Default input to be used during development.
-        var DEFAULT_INPUT = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                            'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.'];
-        var input = null;
-        var descriptions = [];
-        var idx = 0;
-        var enabled = false;
-        function main() {
-          // Read input to the HIT. In development the default input will be
-          // used, and in deployment actual input will be used.
-          input = amt.getInput(DEFAULT_INPUT);
-          
-          // Set up the descriptions.
-          _.each(input, function() { descriptions.push(''); });
-          
-          // If the HIT is not in preview mode, then we need to enable the UI
-          // and set up the logic for submitting.
-          if (!amt.isPreview()) {
-            enable_hit();
-          }
-            render();
-        }
-
-        // Use the current index to update the image and description
-        function render() {
-          // Set up the story
-          $('#story').val('');
-          $('#story').val(input[idx]);
-     
-          // Set up the text area
-          $('#text-area').val(descriptions[idx]);
-
-          // Refresh the counter
-          $('.counter-top').text(idx + 1);
-          $('.counter-bottom').text(input.length);
-
-          // If the UI is enabled, enable or disable the buttons depending on
-          // the index.
-          if (enabled) {
-            var prev_btn = $('#prev-btn');
-            var next_btn = $('#next-btn');
-            prev_btn.prop('disabled', true);
-            next_btn.prop('disabled', true);
-            if (idx > 0) {
-              prev_btn.prop('disabled', false);
-            }
-            if (idx < input.length - 1) next_btn.prop('disabled', false);
-          }
-        }
-
-        // Update the index, and save the text in the text area.
-        function set_idx(new_idx) {
-          if (new_idx < 0 || new_idx >= input.length) return;
-          idx = new_idx;
-          render();
-        }
-
-        function enable_hit() {
-          // Enable the UI.
-          enabled = true;
-
-          // Enable the submit button. You must do this in every HIT.
-          $('#submit-btn').prop('disabled', false);
-          $('#next-btn').click(function() { set_idx(idx + 1) });
-          $('#prev-btn').click(function() { set_idx(idx - 1) });
-
-          // submit turk and get HIT id
-          amt.setupSubmit();
-
-          // Set up a click handler for the submit button.
-          $('#submit-btn').click(function() {
-            // Construct an object containing the output.
-            // Output consists of set of tuples (string story, string selection)
-            $('#text-area').val(descriptions[idx]);
-
-            // Validate the output
-            if (_.any(descriptions, function(d) { return d.length < 10; })) {
-              alert('Selections should exceed three words. Correct before submitting.');
-              return false;
-            } else {
-                var output = _.map(_.zip(input, descriptions), function(x) {
-                  return {'story': x[0], 'description': x[1]};
-                });
-                amt.setOutput(output);
-            }
-          });
-        }
-
-        // Detect text-selection event
-        $('#story-container').click(function(e) {
-          var selected_text = $('#story').selection().trim();
-          if (false) { // ensure first and last words are not cut off.
-            alert('Selected text must be a complete phrase (no partial words)');
-          } else {
-            descriptions[idx] = selected_text;
-            $('#text-area').val(selected_text);
-          }
-        });
-
-        main();
-      });
-    </script>
   </body>
 </html>
