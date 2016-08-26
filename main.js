@@ -12,7 +12,6 @@ $(function() {
     var enabled = false;
 
     function main() {
-//        add_predicate();
         // Read input to the HIT. In development the default input will be
         // used, and in deployment actual input will be used.
         input = amt.getInput(DEFAULT_INPUT);

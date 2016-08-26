@@ -1,3 +1,5 @@
+var input_size = 0;
+var idx = 0;
 $(function() {
     // Default input to be used during development.
     var DEFAULT_INPUT = ['Karen was assigned a roommate her first year of college. Her roommate asked her to go to a nearby city for a concert. Karen agreed happily. The show was absolutely exhilarating.',
@@ -8,14 +10,13 @@ $(function() {
     var descriptions = [];
     var predicates_list = []; // array of phrase mappings
     var predicates = {};
-    var idx = 0;
     var enabled = false;
 
     function main() {
-        add_predicate();
         // Read input to the HIT. In development the default input will be
         // used, and in deployment actual input will be used.
         input = amt.getInput(DEFAULT_INPUT);
+        input_size = input.length;
 
         // Set up the descriptions.
         _.each(input, function() { descriptions.push(''); });
@@ -96,7 +97,7 @@ $(function() {
 
     /*
        Change handlers
-       */
+    */
     // Detect text-selection event
     $('#story-container').click(function(e) {
         var selected_text = $('#story').selection().trim();
@@ -120,4 +121,3 @@ $(function() {
 
     main();
 });
-
