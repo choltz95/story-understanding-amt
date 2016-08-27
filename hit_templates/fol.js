@@ -1,21 +1,35 @@
 var ActionComponent = React.createClass({
-/*  getInitialState: function() {
-    return { editing: true }
-  },
-*/
   getValue: function() {
     return(this.refs.action.value); 
   },
 
   render: function() {
+    var wrapStyle = { display: 'inline-block' };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
+    if(this.props.index == 0) {
+      var selectStyle = { display: 'none' };
+    } else {
+      selectStyle = {};
+    }
     if(this.props.edit == true) {
-      return( // still need to add functions & link to context
+      return( // still need to add functions/variables in order & link to context
+        <div style = {wrapStyle}>
         <textarea ref='action' rows="1" maxLength="50" placeholder="action" defaultValue={this.props.defaultValue} style={divStyle}></textarea>
+        <select ref='op' style={selectStyle}>
+          <option value="&&">&amp;&amp;</option>
+          <option value="||">||</option>
+        </select>
+        </div>
       );
     } else {
       return(
+        <div style = {wrapStyle}>
         <div className="actionText" style={divStyle}>{this.props.defaultValue}</div>
+        <select ref='op' style={selectStyle}>
+          <option value="&&">&amp;&amp;</option>
+          <option value="||">||</option>
+        </select>
+        </div>
       );
     }
   }

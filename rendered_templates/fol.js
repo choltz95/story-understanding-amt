@@ -8,11 +8,27 @@ var ActionComponent = React.createClass({
   },
 
   render: function() {
+    var wrapStyle = { display: 'inline-block' };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
-    if(this.props.edit == true) {
-      return(<textarea ref='action' rows="1" maxLength="50" placeholder="action" defaultValue={this.props.defaultValue} style={divStyle}></textarea>);
+    if(this.props.index == 0) {
+      var selectStyle = { display: 'none' };
     } else {
-      return(<div className="actionText" style={divStyle}>{this.props.defaultValue}</div>);
+      selectStyle = {};
+    }
+    if(this.props.edit == true) {
+      return( // still need to add functions & link to context
+        <div style = {wrapStyle}>
+        <textarea ref='action' rows="1" maxLength="50" placeholder="action" defaultValue={this.props.defaultValue} style={divStyle}></textarea>
+        <select style={selectStyle}>
+          <option value="&&">&amp;&amp;</option>
+          <option value="||">||</option>
+        </select>
+        </div>
+      );
+    } else {
+      return(
+        <div className="actionText" style={divStyle}>{this.props.defaultValue}</div>
+      );
     }
   }
 });
@@ -187,7 +203,7 @@ var PredicateManager = React.createClass({
   addVariable: function(i) {
     console.log('adding variable');
     var predicates = this.state.predicates;
-    predicates[i][0].unshift("");
+    predicates[i][0].push("");
     this.setState({predicates:predicates});
   },
 
