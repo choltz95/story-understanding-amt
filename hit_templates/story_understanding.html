@@ -124,6 +124,7 @@ var PredicateComponent = React.createClass({
       console.log('removing predicate');
       this.props.removePredicate(this.props.index);
     } else {
+      alert("Must provide at least one implication.");
       return false;
     }
   },
@@ -209,7 +210,7 @@ var PredicateComponent = React.createClass({
     var btnStyle = { marginLeft: 5, marginRight:-10 };
     return (
       <div className='predicate'>
-        {'rule ' + this.props.index+1 + ':'}
+        {'rule ' + (this.props.index+1) + ':'}
         <button onClick={this.addVariable} className='btn btn-xs add-variable-btn' style={btnStyle}>(+)Add Variable</button>
         <div className='action-container' style={inlineBlock}>
         {
@@ -497,7 +498,7 @@ $(function() {
       #story {
         margin: 10px 0;
         font-size: 10pt;
-        min-height: 115px;
+        min-height: 180px;
         cursor: text;
       }
       #button-div {
@@ -519,20 +520,30 @@ $(function() {
     <div class='containier-fluid'>
       <h2>Highlight the relevent phrases of the story...</h2>
       <div class='row'>
-        <div class='col-md-4 text-center' id='instruction-div'>
-          <div id='instruction-container' style='border:1px solid black;'>
-            <ul style="text-align: left">
+          <div class='col-xs-4 text-center' id='instruction-div' style="margin-right: -10px">
+            <ul style="text-align: left; border: 1px solid black">
+            <b>INSTRUCTIONS</b>
               <li>You must accept this HIT before you can submit it.</li>
-              <li>Write the fifth sentence that most likely follows the previous four.</li>
-              <li>Highlight the most significant phrases in the text.</li>
-              <li>Highlight only complete phrases (no partial words).</li>
-	      <li>Construct some FOL implications.</li>
+              <li>Read the story to the right carefully.</li>
+              <li>Explain why the 5th sentence logically follows the previous 4 in the text box below.</li>
+	          <li>Construct some rules by:</li>
+              <ul style="text-align: left">
+                <li>Providing statements on left-hand-side of an implication-symbol</li>
+                <li>An implication to the right hand side</li>
+              </ul>
+              <li>Example:</li>
+              <ul style="text-align: left">
+                <li>Context: There is smoke and heat in the forest.</li>
+                <li>Contextual rules: context ==> smoke, context ==> heat</li>
+                <li>Knowledge rules: smoke && heat ==> fire</li>
+                <li>Inference: fire && context ==> There is a fire in the forest.</li>
+              </ul>
             </ul>    
-          </div>
         </div>
         <div class='col-xs-4 text-center' style="margin-top:-12px">
           <div id='story-container'>
-             <textarea id='story' class='form-control tb-margin' readonly></textarea>
+            <b>CONTEXT</b>
+              <textarea id='story' class='form-control tb-margin' readonly></textarea>
           </div>
         </div>
       </div>
