@@ -38,7 +38,6 @@ var ActionComponent = React.createClass({
   },
 
   render: function() {
-    //console.log(this.props.consList);
     var btnStyle = { marginLeft: 5, marginRight:0 }; //prop todo 
     var wrapStyle = { display: 'inline-block' };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
@@ -94,7 +93,7 @@ var ActionComponent = React.createClass({
 
 var PredicateComponent = React.createClass({
   getInitialState: function() {
-    return { editing: false, actions: [], ops:[] }
+    return { editing: false, actions: [], ops:[] } // editing false
   },
 
   edit: function() {
@@ -106,6 +105,7 @@ var PredicateComponent = React.createClass({
       console.log('removing predicate');
       this.props.removePredicate(this.props.index);
     } else {
+      alert("Must provide at least one implication.");
       return false;
     }
   },
@@ -191,7 +191,7 @@ var PredicateComponent = React.createClass({
     var btnStyle = { marginLeft: 5, marginRight:-10 };
     return (
       <div className='predicate'>
-        {'rule ' + this.props.index+1 + ':'}
+        {'rule ' + (this.props.index+1) + ':'}
         <button onClick={this.addVariable} className='btn btn-xs add-variable-btn' style={btnStyle}>(+)Add Variable</button>
         <div className='action-container' style={inlineBlock}>
         {
