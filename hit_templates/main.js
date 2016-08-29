@@ -8,8 +8,6 @@ $(function() {
 
     var input = null;
     var descriptions = [];
-    var predicates_list = []; // array of phrase mappings
-    var predicates = {};
     var enabled = false;
 
     function main() {
@@ -83,15 +81,17 @@ $(function() {
             $('#text-area').val(descriptions[idx]);
 
             // Validate the output
-            if (_.any(descriptions, function(d) { return d.length < 10; })) {
+           /* if (_.any(descriptions, function(d) { return d.length < 10; })) {
                 alert('Selections should exceed three words. Correct before submitting.');
                 return false;
-            } else {
-                var output = _.map(_.zip(input, descriptions, mappings), function(x) {
-                    return {'story': x[0], 'description': x[1], 'mapping':x[2]};
-                });
-                amt.setOutput(output);
-            }
+            } else {*/
+            predicates = window.app.getFinalState();
+            var output = _.map(_.zip(input, descriptions, predicates), function(x) {
+                return {'story': x[0], 'description': x[1], 'predicates':x[2]};
+            });
+            //console.log(output[0]);
+            amt.setOutput(output);
+            //}
         });
     }
 
@@ -109,15 +109,9 @@ $(function() {
         }
     });
 
-    $('.add-predicate-btn').click(function(e) {
-        this.style.display = 'none';
-        add_predicate();
+    $('#text-area').change(function(){
+        descriptions[idx] = $('#text-area').val();
     });
-
-    function add_predicate() {
-        $clone = $('.predicate-template:first').clone(true).show();
-        $('#predicate-container').append($clone);
-    } 
 
     main();
 });
