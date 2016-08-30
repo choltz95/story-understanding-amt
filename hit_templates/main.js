@@ -89,7 +89,6 @@ $(function() {
             var output = _.map(_.zip(input, descriptions, predicates), function(x) {
                 return {'story': x[0], 'description': x[1], 'predicates':x[2]};
             });
-            //console.log(output[0]);
             amt.setOutput(output);
             //}
         });

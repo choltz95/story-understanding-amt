@@ -49,7 +49,7 @@ var ActionComponent = React.createClass({
 
     if(this.props.edit == true) {
       if (this.state.customValue == true) {
-        return( // still need to add functions/variables in order & link to context
+        return( 
           <div style = {wrapStyle}>
             <textarea ref='action' rows="1" maxLength="50" placeholder="action" defaultValue={this.props.adefaultValue} style={divStyle} onBlur={this.onBlurHandler}></textarea>
             <select ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
@@ -93,7 +93,11 @@ var ActionComponent = React.createClass({
 
 var PredicateComponent = React.createClass({
   getInitialState: function() {
-    return { editing: false, actions: [], ops:[] } // editing false
+    var ed = false;
+    if(this.props.index == this.props.consList.length) {
+      ed = true;
+    }
+    return { editing: ed, actions: [], ops:[] }
   },
 
   edit: function() {
@@ -133,7 +137,7 @@ var PredicateComponent = React.createClass({
   },
 
   addVariable: function() {
-    console.log("adding variable"); // insert into action-container  
+    console.log("adding variable");
     var actions = this.state.actions;
     actions.push("");
     this.setState({actions: actions});
@@ -155,7 +159,7 @@ var PredicateComponent = React.createClass({
       btnVisibility="none";
     }
     var divStyle = { display: 'inline-block', margin: 5 };
-    var btnStyle = { display: btnVisibility, margin: 5 }; //prop todo 
+    var btnStyle = { display: btnVisibility, margin: 5 }; 
     return (
       <div className='predicate'>
         {'rule ' + (this.props.index+1) + ':'}
@@ -215,7 +219,8 @@ var PredicateComponent = React.createClass({
           <option value="==>">==&gt;</option>
         </select>
         <textarea ref='consequence' rows="1" maxLength="50" placeholder="consequence" defaultValue={this.props.cons} style={divStyle}></textarea>
-        <button onClick={this.save} className='btn btn-xs save-predicate-btn'>(~)Save Rule</button>
+        <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>(~)Save Rule</button>
+        <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={inlineBlock}>(&#8211;)Remove Rule</button>
       </div>        
     );
   },
@@ -315,14 +320,23 @@ var StoryBoard = React.createClass({
     return { PredicateManagers, i_x: 0, changeBoards: false}
   },
 
+  getFinalState: function() {
+    var preds = [];
+    for(var i=0;i<input_size;i++) {
+      preds.push(this.refs['manager'+i].state.predicates);
+    }
+    //console.log(preds);
+    return(preds);
+  },
+
   render: function() {
-    console.log(globalState);
+    //console.log(globalState);
     return(
       <div className="predicate-container">
       {
         this.state.PredicateManagers.map(function(predicate, i) {
           return (
-            <PredicateManager key={i} index={i} i_x = {this.state.i_x}>
+            <PredicateManager key={i} index={i} ref={'manager'+i} i_x={this.state.i_x}>
             </PredicateManager>
           );
         }, this) 
