@@ -18,7 +18,7 @@
     <script type="text/babel">
     var ActionComponent = React.createClass({
   getInitialState: function() {
-    return { op: this.props.opdefaultValue, act: this.props.adefaultValue, customValue: false }
+    return { op: this.props.opdefaultValue, act: this.props.adefaultValue, customValue: false, linking: false }
   },
   getAction: function() {
     if(this.state.customValue == true){
@@ -32,11 +32,7 @@
     if(this.state.op == '' || this.state.op == null) {return("&&");}
     return(this.state.op);
   },
-
-  linkAction: function() {
-    return;
-  },
-
+  
   opChangeHandler: function(event){
     this.setState({op: event.target.value});
   },
@@ -55,10 +51,16 @@
     }
   },
 
+  link: function() {
+    this.setState({linking: true});
+    return(false);
+  },
+
   render: function() {
     var btnStyle = { marginLeft: 5, marginRight:0 }; //prop todo 
     var wrapStyle = { display: 'inline-block' };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
+    var linkStyle = {marginTop: 10 };
     if(this.props.index == this.props.numActions-1) {
       var selectStyle = { display: 'none' };
     } else {
@@ -99,10 +101,21 @@
         );
       }
     } else {
-      return(
+        if(this.state.linking == true){
+          console.log('test');
+          return(false);
+        }
+
+        return(
+        <div>
+        <div style={linkStyle}>
+          <button onClick={this.link} className='btn btn-xs link-btn' style={btnStyle}>-></button>
+        </div>
+
         <div style = {wrapStyle}>
         <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
         <b style={selectStyle}>{this.props.opdefaultValue}</b>
+        </div>
         </div>
       );
     }
@@ -260,7 +273,8 @@ var PredicateManager = React.createClass({
           [""],[""],"" // action list, consequence
         ]
       ],
-      consList: []
+      consList: [], // consequence list
+      contextLinks: [] // context links
     }
   }, 
 
@@ -340,6 +354,7 @@ var StoryBoard = React.createClass({
 
   getFinalState: function() {
     var preds = [];
+    var contextLinks = [];
     for(var i=0;i<input_size;i++) {
       preds.push(this.refs['manager'+i].state.predicates);
     }
