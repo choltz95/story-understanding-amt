@@ -1,6 +1,6 @@
-var ActionComponent = React.createClass({
+    var ActionComponent = React.createClass({
   getInitialState: function() {
-    return { op: this.props.opdefaultValue, act: this.props.adefaultValue, customValue: false }
+    return { op: this.props.opdefaultValue, act: this.props.adefaultValue, customValue: false, linking: false, linkList: [] }
   },
   getAction: function() {
     if(this.state.customValue == true){
@@ -14,11 +14,7 @@ var ActionComponent = React.createClass({
     if(this.state.op == '' || this.state.op == null) {return("&&");}
     return(this.state.op);
   },
-
-  linkAction: function() {
-    return;
-  },
-
+  
   opChangeHandler: function(event){
     this.setState({op: event.target.value});
   },
@@ -37,10 +33,36 @@ var ActionComponent = React.createClass({
     }
   },
 
+  setLink: function() { // i, j, grounding jth word of ith action 
+    this.setState({linking: true});
+    var action = this.getAction();
+    this.setState({linkList: action.split(" ")});
+    $('#story').removeClass('noselect');
+    //this.props.addLink(this.props.index);
+  },
+
+  $('#story-container').click(function(e) {
+      var selected_text = $('#story').selection().trim();
+      if (false) { // ensure first and last words are not cut off.
+          alert('Selected text must be a complete phrase (no partial words)');
+      } else {
+          descriptions[idx] = selected_text;
+          $('#text-area').val(selected_text);
+      }
+  });
+
+  link: function(i) {
+    console.log(i);
+    var word = this.state.linkList[i];
+    this.refs.linked_element.value= word;
+  },
+
   render: function() {
-    var btnStyle = { marginLeft: 5, marginRight:0 }; //prop todo 
+    var btnStyle = { marginLeft: 5, marginRight: 0 }; //prop todo 
     var wrapStyle = { display: 'inline-block' };
+    var linkedElementStyle = { display: 'inline-block', width: 50, overflow:'hidden', marginBottom:-8 };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
+    var linkStyle = {marginTop: 10 };
     if(this.props.index == this.props.numActions-1) {
       var selectStyle = { display: 'none' };
     } else {
@@ -81,12 +103,41 @@ var ActionComponent = React.createClass({
         );
       }
     } else {
-      return(
-        <div style = {wrapStyle}>
-        <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
-        <b style={selectStyle}>{this.props.opdefaultValue}</b>
-        </div>
-      );
+        if(this.state.linking == true){
+          return(
+            <div style = {wrapStyle}>
+            <div style={linkStyle}>
+            <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" defaultValue={this.props.cons} style={linkedElementStyle} disabled></textarea>
+              <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>-></button>
+            <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" defaultValue={this.props.cons} style={linkedElementStyle} disabled></textarea>
+            </div>
+            <div className="actionText" style={divStyle}>
+            {
+              this.state.linkList.map(function(word, i) { 
+                return (
+                  <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
+                );
+              },this)
+            }
+            </div>
+            <div style = {wrapStyle}>
+            <b style={selectStyle}>{this.props.opdefaultValue}</b>
+            </div>
+            </div>
+          ); // <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
+        } else {
+          return(
+              <div style = {wrapStyle}>
+                <div style={linkStyle}>
+                  <button onClick={this.setLink} className='btn btn-xs link-btn' style={btnStyle}>-></button>
+                </div>
+                <div style = {wrapStyle}>
+                  <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
+                  <b style={selectStyle}>{this.props.opdefaultValue}</b>
+                </div>
+              </div>
+            );
+        }
     }
   }
 });
@@ -142,7 +193,15 @@ var PredicateComponent = React.createClass({
     actions.push("");
     this.setState({actions: actions});
     this.props.addVariable(this.props.index);
-  },        
+  },   
+
+  addLink: function(i, j, grounding) { // jth word of ith action 
+    this.props.addLink(this.props.index, i, j, grounding);
+  },   
+
+  removeLink: function() {
+    return;
+  },
 
   add: function() {
     console.log('adding predicate');
@@ -162,7 +221,7 @@ var PredicateComponent = React.createClass({
     var btnStyle = { display: btnVisibility, margin: 5 }; 
     return (
       <div className='predicate'>
-        {'rule ' + (this.props.index+1) + ':'}
+        {'Rule ' + (this.props.index+1) + ':'}
         <div className='action-container' style={divStyle}>        
         {
           this.props.act.map(function(action, i) { 
@@ -174,7 +233,8 @@ var PredicateComponent = React.createClass({
                  adefaultValue={action}
                  opdefaultValue={this.props.op[i]}
                  edit={this.state.editing}
-                 ref={'action'+i}>
+                 ref={'action'+i}
+                 addLink={this.addLink}>
               </ActionComponent>
             );
           }, this)
@@ -187,7 +247,7 @@ var PredicateComponent = React.createClass({
           <button ref='addBtn' onClick={this.add} className='btn btn-xs add-predicate-btn' style={btnStyle}>(+)Add Rule</button>
       </div> 
     );
-  },
+  }, // <button onClick={this.addLink} className='btn btn-xs edit-predicate-btn' style={divStyle}>(->)Link Element</button>
 
   renderForm: function() {
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
@@ -195,7 +255,7 @@ var PredicateComponent = React.createClass({
     var btnStyle = { marginLeft: 5, marginRight:-10 };
     return (
       <div className='predicate'>
-        {'rule ' + (this.props.index+1) + ':'}
+        {'Rule ' + (this.props.index+1) + ':'}
         <button onClick={this.addVariable} className='btn btn-xs add-variable-btn' style={btnStyle}>(+)Add Variable</button>
         <div className='action-container' style={inlineBlock}>
         {
@@ -209,7 +269,8 @@ var PredicateComponent = React.createClass({
                  adefaultValue={action}
                  opdefaultValue={this.props.op[i]}
                  edit={this.state.editing}
-                 ref={'action'+i}>
+                 ref={'action'+i}
+                 addLink={this.addLink}>
               </ActionComponent>
             );
           }, this)
@@ -239,10 +300,10 @@ var PredicateManager = React.createClass({
     return {
       predicates: [
         [ // predicate
-          [""],[""],"" // action list, consequence
+          [""],[""], "", [[""]] // action list, op list, consequence, list of groundings- per word
         ]
       ],
-      consList: []
+      consList: [], // consequence list
     }
   }, 
 
@@ -279,6 +340,13 @@ var PredicateManager = React.createClass({
     this.setState({predicates:predicates});
   },
 
+  addLink: function(i,j,k, grounding) { // ground kth word of the jth action of the ith rule
+    console.log('grounding element');
+    var predicates = this.state.predicates;
+    predicates[i][3][j][k] = grounding;
+    this.setState({predicates: predicates});
+  },
+
   render: function() {
     if(this.props.index == this.props.i_x) {
       return(
@@ -294,11 +362,13 @@ var PredicateManager = React.createClass({
                  act={predicate[0]}
                  op={predicate[1]}
                  cons={predicate[2]}
+                 contextLinks={predicate[3]}
                  consList={this.state.consList}
                  updatePredicate={this.updatePredicate}
                  removePredicate={this.removePredicate}
                  addPredicate={this.addPredicate}
-                 addVariable={this.addVariable}>
+                 addVariable={this.addVariable}
+                 addLink={this.addLink}>
               </PredicateComponent>
             );
           }, this)
@@ -322,6 +392,7 @@ var StoryBoard = React.createClass({
 
   getFinalState: function() {
     var preds = [];
+    var contextLinks = [];
     for(var i=0;i<input_size;i++) {
       preds.push(this.refs['manager'+i].state.predicates);
     }

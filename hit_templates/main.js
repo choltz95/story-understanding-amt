@@ -98,7 +98,7 @@ $(function() {
        Change handlers
     */
     // Detect text-selection event
-    $('#story-container').click(function(e) {
+/*    $('#story-container').click(function(e) {
         var selected_text = $('#story').selection().trim();
         if (false) { // ensure first and last words are not cut off.
             alert('Selected text must be a complete phrase (no partial words)');
@@ -111,6 +111,6 @@ $(function() {
     $('#text-area').change(function(){
         descriptions[idx] = $('#text-area').val();
     });
-
+*/
     main();
 });
