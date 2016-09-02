@@ -67,7 +67,7 @@
   </head>
   <body>
     <div class='containier-fluid'>
-      <h2>Highlight the relevent phrases of the story...</h2>
+      <h2>Describe the relevent phrases of the story...</h2>
       <div class='row'>
           <div class='col-xs-4 text-center' id='instruction-div' style="margin-right: -10px">
             <ul style="text-align: left; border: 1px solid black">
@@ -87,7 +87,7 @@
                 <li>Knowledge rules: smoke && heat ==> fire</li>
                 <li>Inference: fire && context ==> There is a fire in the forest.</li>
               </ul>
-            </ul>    
+            </ul>
         </div>
         <div class='col-xs-4 text-center' style="margin-top:-12px">
           <div id='story-container'>
@@ -96,8 +96,9 @@
           </div>
         </div>
         <div class='col-md-4 text-center' style="margin-top:-12px">
-          <div id='story-container'>
-            <b>CONTEXT GROUNDING</b>
+          <b>CONTEXT GROUNDING</b>
+          <div id='grounding-container'>
+            
           </div>
         </div>
       </div>
@@ -160,8 +161,8 @@
       setupSubmit: setupSubmit,
     }
   })();
-</script> 
-        </div> 
+</script>
+        </div>
       </div>
       <div id='predicate-containers'></div>
     </div>
