@@ -1,4 +1,4 @@
-var ConsequenceComponent = React.createClass({
+    var ConsequenceComponent = React.createClass({
   getInitialState: function() {
     return { linking: false, linkList: [], i:-1 }
   },

@@ -1,10 +1,10 @@
-var input_size = 0;
+   var input_size = 0;
 var idx = 0;
 $(function() {
     // Default input to be used during development.
     var DEFAULT_INPUT = ['Karen was assigned a roommate her first year of college. Her roommate asked her to go to a nearby city for a concert. Karen agreed happily. The show was absolutely exhilarating.',
     'Jim got his first credit card in college. He didn\'t have a job so he bought everything on his card. After he graduated he amounted a $10,000 debt. Jim realized that he was foolish to spend so much money.',
-    'Gina misplaced her phone at her grandparents. It wasn\'t anywhere in the living room. She realized she was in the car before. She grabbed her dad\'s keys and ran outside. ']; 
+    'Gina misplaced her phone at her grandparents. It wasn\'t anywhere in the living room. She realized she was in the car before. She grabbed her dad\'s keys and ran outside. '];
 
     var input = null;
     var descriptions = [];
@@ -93,24 +93,5 @@ $(function() {
             //}
         });
     }
-
-    /*
-       Change handlers
-    */
-    // Detect text-selection event
-/*    $('#story-container').click(function(e) {
-        var selected_text = $('#story').selection().trim();
-        if (false) { // ensure first and last words are not cut off.
-            alert('Selected text must be a complete phrase (no partial words)');
-        } else {
-            descriptions[idx] = selected_text;
-            $('#text-area').val(selected_text);
-        }
-    });
-
-    $('#text-area').change(function(){
-        descriptions[idx] = $('#text-area').val();
-    });
-*/
     main();
 });
