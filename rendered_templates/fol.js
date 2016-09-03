@@ -371,6 +371,7 @@ var PredicateManager = React.createClass({
     return {
       predicates: predicates,
       consList: [], // consequence list
+      step: 1
     }
   },
 
@@ -405,7 +406,6 @@ var PredicateManager = React.createClass({
     console.log('adding variable');
     var predicates = this.state.predicates;
     predicates[i][0].push("");
-    //predicates[i][3].push([""]);
     predicates[i][3][predicates[i][3].length-20] = [""];//baaaddd
     this.setState({predicates:predicates});
   },
@@ -419,9 +419,18 @@ var PredicateManager = React.createClass({
   },
   
   render: function() {
+    var description = "";
+    if(this.state.step==1) {
+      description = "add rules";
+    } else if(this.state.step==2) {
+      description = "ground rules";
+    } else {
+      description = "modify";
+    }
     if(this.props.index == this.props.i_x) {
       return(
         <div className="predicates">
+        <h3>{"Step: " + this.state.step + " " + description}</h3>
         {
           this.state.predicates.map(function(predicate, i) {
             return (
@@ -520,11 +529,11 @@ var ContextBoard = React.createClass({
     return(
       <div className="contexts">
       {
-        this.props.predicates.map(function(predicate, i) {
+        this.props.predicates.map(function(predicate, i) { // ith predicate
           return (
-            predicate[3].map(function(action,j) {
+            predicate[3].map(function(action,j) { //jth action
               return(
-                action.map(function(mapping,k){
+                action.map(function(mapping,k){ //kth word
                   if(mapping != "") {
                     if(j==20){ // if consequence
                       return(
