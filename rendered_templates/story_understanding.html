@@ -34,6 +34,9 @@
       .notification {
         background-color: yellow;
       }
+      .hidden {
+        visibility: hidden;
+      }
       #text-area {
         margin: 10px 0;
         font-size: 10pt;
@@ -67,15 +70,15 @@
   </head>
   <body>
     <div class='containier-fluid'>
-      <h2>Describe the relevent phrases of the story...</h2>
-      <div class='row'>
+      <h2 style="margin-left: 10px">Describe the relevent phrases of the story...</h2>
+      <div class='row' style="margin-left:0px">
           <div class='col-xs-4 text-center' id='instruction-div' style="margin-right: -10px">
             <ul style="text-align: left; border: 1px solid black">
             <b>INSTRUCTIONS</b>
               <li>You must accept this HIT before you can submit it.</li>
               <li>Read the story to the right carefully.</li>
-              <li>Explain why the 5th sentence logically follows the previous 4 in the text box below.</li>
-	          <li>Construct some rules by:</li>
+              <li>Explain why the 5th sentence logically follows the previous 4 in the text box below (Step 0).</li>
+	          <li>Construct some rules (Step 1) by:</li>
               <ul style="text-align: left">
                 <li>Providing statements on left-hand-side of an implication-symbol</li>
                 <li>An implication to the right hand side</li>
@@ -87,9 +90,10 @@
                 <li>Knowledge rules: smoke && heat ==> fire</li>
                 <li>Inference: fire && context ==> There is a fire in the forest.</li>
               </ul>
+            <li>Ground these rules by linking terms to phrases in the context (Step 2).</li>
             </ul>
           </div>
-          <div class='col-xs-4 text-center' style="margin-top:-12px">
+          <div class='col-md-4 text-center' style="margin-top:-12px">
             <div id='story-container'>
               <b>CONTEXT</b>
               <textarea id='story' class='form-control tb-margin noselect' readonly></textarea>
@@ -97,21 +101,13 @@
             <b>YOUR RESPONSE</b>
             <textarea id='text-area' class='form-control tb-margin' disabled></textarea>
           </div>
-          <div class='col-md-4 text-center' style="margin-top:-12px">
-            <b>CONTEXT GROUNDING</b>
-            <div id='grounding-container'></div>
-          </div>
-        </div>
-      </div>
-      <div id='predicate-containers'></div>
-      <div class='row'>
-        <div class='col-xs-4 text-center col-md-offset-4' id='button-div' style="margin-top: 50px">
-          <button id='prev-btn' class='btn btn-md btn-primary' disabled>Back</button>
-          <span id='counter'>
-            <span class='counter-top'></span> / <span class='counter-bottom'></span>
-          </span>
-          <button id='next-btn' class='btn btn-md btn-primary' disabled>Next</button>
-        <script type='text/json' id='input'>
+          <div class='col-md-4 text-center' id='button-div' style="margin-top: 15px">
+            <button id='prev-btn' class='btn btn-md btn-primary' disabled>Back</button>
+            <span id='counter'>
+              <span class='counter-top'></span> / <span class='counter-bottom'></span>
+            </span>
+            <button id='next-btn' class='btn btn-md btn-primary' disabled>Next</button>
+            <script type='text/json' id='input'>
   
 </script>
 <form id='results-form' method='post' action='dummy'>
@@ -161,6 +157,13 @@
     }
   })();
 </script>
+          </div>
+        </div>
+      </div>
+      <div id='predicate-containers' class='col-md-8'></div>
+      <div class='col-md-4 text-center' style="margin-top:50px">
+        <b>CONTEXT GROUNDING</b>
+        <div id='grounding-container'></div>
       </div>
     </div>
   </body>

@@ -1,6 +1,6 @@
 {
   "rendered_template_directory" : "rendered_templates",
   "template_directories": [ "hit_templates" ],
-  "aws_access_key": "AKIAIF2VJZQR566EH3GQ",
-  "aws_secret_key": "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"
+  "aws_access_key": "AKIAIZGNBF5F62C3A52A",
+  "aws_secret_key": "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"
 }

@@ -1,8 +1,8 @@
-    var ConsequenceComponent = React.createClass({
+var ConsequenceComponent = React.createClass({
   getInitialState: function() {
     return { linking: false, linkList: [], i:-1 }
   },
-  
+
   setLink: function() { // i, j, grounding jth word of ith action
     this.setState({linking: true});
     this.setState({linkList: this.props.cons.trim().split(" ")});
@@ -27,17 +27,25 @@
   
   render: function() {
     var btnStyle = { marginLeft: 5, marginRight: 0 };
+    var groundBtnStyle = { marginLeft: 5, marginRight: 0 };
     var wrapStyle = { display: 'inline-block' };
     var linkedElementStyle = { display: 'inline-block', width: 50, overflow:'hidden', marginBottom:-8, marginLeft:5 };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
     var linkStyle = {marginTop: 10 };
+
+    var s = this.props.step;
+    if(s==1) {
+      groundBtnStyle['display'] = 'none';
+    } else {
+      groundBtnStyle['display'] = '';
+    }
 
     if(this.state.linking == true){
       return (
         <div style = {wrapStyle}>
           <div style={linkStyle}>
             <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
-              <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>-></button>
+            <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>^</button>
             <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
           </div>
           <div className="actionText" style={divStyle}>
@@ -45,17 +53,17 @@
             this.state.linkList.map(function(word, i) {
               return (
                 <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
-              );
+                );
             },this)
           }
           </div>
         </div>
-      );
+        );
     } else {
       return(
         <div style = {wrapStyle}>
           <div style={linkStyle}>
-           <button onClick={this.setLink} className='btn btn-xs link-btn' style={btnStyle}>-></button>
+            <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>^</button>
           </div>
           <div ref='consequenceText' className='consequenceText' style={divStyle}>{this.props.cons}</div>
         </div>
@@ -63,8 +71,8 @@
     }
   }
 });
-  
-    var ActionComponent = React.createClass({
+
+var ActionComponent = React.createClass({
   getInitialState: function() {
     return { op: this.props.opdefaultValue, act: this.props.adefaultValue, customValue: false, linking: false, linkList: [], i:-1 }
   },
@@ -80,7 +88,7 @@
     if(this.state.op == '' || this.state.op == null) {return("&&");}
     return(this.state.op);
   },
-  
+
   opChangeHandler: function(event){
     this.setState({op: event.target.value});
   },
@@ -109,7 +117,6 @@
     this.setState({i: i});
     var word = this.state.linkList[i];
     this.refs.linked_element.value= word;
-    //this.refs.ground.value = this.props.contextLinks[this.props.index][i];
   },
   
   saveLink: function() {
@@ -124,6 +131,7 @@
 
   render: function() {
     var btnStyle = { marginLeft: 5, marginRight: 0 };
+    var groundBtnStyle = { marginLeft: 5, marginRight: 0 };
     var wrapStyle = { display: 'inline-block' };
     var linkedElementStyle = { display: 'inline-block', width: 50, overflow:'hidden', marginBottom:-8, marginLeft:5 };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
@@ -132,6 +140,13 @@
       var selectStyle = { display: 'none' };
     } else {
       selectStyle = {};
+    }
+
+    var s = this.props.step;
+    if(s==1) {
+      groundBtnStyle['display'] = 'none';
+    } else {
+      groundBtnStyle['display'] = '';
     }
 
     if(this.props.edit == true) {
@@ -144,7 +159,7 @@
               <option value="||">||</option>
             </select>
           </div>
-        );
+          );
       } else {
         return (
           <div style={wrapStyle}>
@@ -165,44 +180,44 @@
               <option value="||">||</option>
             </select>
           </div>
-        );
+          );
       }
     } else {
-        if(this.state.linking == true){
-          return(
-            <div style = {wrapStyle}>
+      if(this.state.linking == true){
+        return(
+          <div style = {wrapStyle}>
             <div style={linkStyle}>
-            <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
-              <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>-></button>
-            <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
+              <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
+              <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>^</button>
+              <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
             </div>
             <div className="actionText" style={divStyle}>
             {
               this.state.linkList.map(function(word, i) {
                 return (
                   <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
-                );
+                  );
               },this)
             }
             </div>
             <div style = {wrapStyle}>
-            <b style={selectStyle}>{this.props.opdefaultValue}</b>
+              <b style={selectStyle}>{this.props.opdefaultValue}</b>
             </div>
-            </div>
+          </div>
           );
-        } else {
-          return(
-              <div style = {wrapStyle}>
-                <div style={linkStyle}>
-                  <button onClick={this.setLink} className='btn btn-xs link-btn' style={btnStyle}>-></button>
-                </div>
-                <div style = {wrapStyle}>
-                  <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
-                  <b style={selectStyle}>{this.props.opdefaultValue}</b>
-                </div>
-              </div>
-            );
-        }
+      } else {
+        return(
+          <div style = {wrapStyle}>
+            <div style={linkStyle}>
+              <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>^</button>
+            </div>
+            <div style = {wrapStyle}>
+              <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
+              <b style={selectStyle}>{this.props.opdefaultValue}</b>
+            </div>
+          </div>
+        );
+      }
     }
   }
 });
@@ -280,64 +295,99 @@ var PredicateComponent = React.createClass({
     }
     var divStyle = { display: 'inline-block', margin: 5 };
     var btnStyle = { display: btnVisibility, margin: 5 };
-    return (
-      <div className='predicate'>
-        {'Rule ' + (this.props.index+1) + ':'}
+
+    if(this.props.step==2) {
+      return (
+        <div className='predicate'>
+        <b>{'Rule ' + (this.props.index+1) + ':'}</b>
         <div className='action-container' style={divStyle}>
         {
           this.props.act.map(function(action, i) {
             return (
               <ActionComponent
-                 key={i}
-                 index={i}
-                 numActions={this.props.act.length}
-                 adefaultValue={action}
-                 opdefaultValue={this.props.op[i]}
-                 edit={this.state.editing}
-                 ref={'action'+i}
-                 addLink={this.addLink}
-                 contextLinks={this.props.contextLinks[i]}
-                 selectedText={this.props.selectedText}>
+              key={i}
+              index={i}
+              numActions={this.props.act.length}
+              adefaultValue={action}
+              opdefaultValue={this.props.op[i]}
+              edit={this.state.editing}
+              ref={'action'+i}
+              addLink={this.addLink}
+              contextLinks={this.props.contextLinks[i]}
+              selectedText={this.props.selectedText}
+              step={this.props.step}>
               </ActionComponent>
-            );
+              );
           }, this)
         }
         </div>
         <b>==&gt;</b>
-          <ConsequenceComponent cons={this.props.cons} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]}></ConsequenceComponent>
-          <button onClick={this.edit} className='btn btn-xs edit-predicate-btn' style={divStyle}>(~)Edit Rule</button>
-          <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={divStyle}>(&#8211;)Remove Rule</button>
-          <button ref='addBtn' onClick={this.add} className='btn btn-xs add-predicate-btn' style={btnStyle}>(+)Add Rule</button>
-      </div>
-    );
-  }, //<div ref='consequenceText' className='consequenceText' style={divStyle}>{this.props.cons}</div>
+        <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]}></ConsequenceComponent>
+        </div>
+      );
+    } else {
+      return (
+        <div className='predicate'>
+        <b>{'Rule ' + (this.props.index+1) + ':'}</b>
+        <div className='action-container' style={divStyle}>
+        {
+          this.props.act.map(function(action, i) {
+            return (
+              <ActionComponent
+              key={i}
+              index={i}
+              numActions={this.props.act.length}
+              adefaultValue={action}
+              opdefaultValue={this.props.op[i]}
+              edit={this.state.editing}
+              ref={'action'+i}
+              addLink={this.addLink}
+              contextLinks={this.props.contextLinks[i]}
+              selectedText={this.props.selectedText}
+              step={this.props.step}>
+              </ActionComponent>
+              );
+          }, this)
+        }
+        </div>
+        <b>==&gt;</b>
+        <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]}></ConsequenceComponent>
+        <button onClick={this.edit} className='btn btn-xs edit-predicate-btn' style={divStyle}>Edit Rule</button>
+        <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={divStyle}>Remove Rule</button>
+        <button ref='addBtn' onClick={this.add} className='btn btn-xs add-predicate-btn' style={btnStyle}>Add Rule</button>
+        </div>
+        );
+      }
+  }, 
 
   renderForm: function() {
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
     var inlineBlock = { display: 'inline-block', marginLeft:10 };
     var btnStyle = { marginLeft: 5, marginRight:-10 };
+
     return (
       <div className='predicate'>
-        {'Rule ' + (this.props.index+1) + ':'}
-        <button onClick={this.addVariable} className='btn btn-xs add-variable-btn' style={btnStyle}>(+)Add Variable</button>
+        <b>{'Rule ' + (this.props.index+1) + ':'}</b>
+        <button onClick={this.addVariable} className='btn btn-xs add-variable-btn' style={btnStyle}>Add Variable</button>
         <div className='action-container' style={inlineBlock}>
         {
           this.props.act.map(function(action, i) {
             return (
               <ActionComponent
-                 key={i}
-                 index={i}
-                 consList={this.props.consList}
-                 numActions={this.props.act.length}
-                 adefaultValue={action}
-                 opdefaultValue={this.props.op[i]}
-                 edit={this.state.editing}
-                 ref={'action'+i}
-                 addLink={this.addLink}
-                 contextLinks={this.props.contextLinks[i]}
-                 selectedText={this.props.selectedText}>
+              key={i}
+              index={i}
+              consList={this.props.consList}
+              numActions={this.props.act.length}
+              adefaultValue={action}
+              opdefaultValue={this.props.op[i]}
+              edit={this.state.editing}
+              ref={'action'+i}
+              addLink={this.addLink}
+              contextLinks={this.props.contextLinks[i]}
+              selectedText={this.props.selectedText}
+              step={this.props.step}>
               </ActionComponent>
-            );
+              );
           }, this)
         }
         </div>
@@ -345,10 +395,10 @@ var PredicateComponent = React.createClass({
           <option value="==>">==&gt;</option>
         </select>
         <textarea ref='consequence' rows="1" maxLength="50" placeholder="consequence" defaultValue={this.props.cons} style={divStyle}></textarea>
-        <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>(~)Save Rule</button>
-        <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={inlineBlock}>(&#8211;)Remove Rule</button>
+        <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>Save Rule</button>
+        <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={inlineBlock}>Remove Rule</button>
       </div>
-    );
+      );
   },
 
   render: function() {
@@ -417,8 +467,31 @@ var PredicateManager = React.createClass({
     this.setState({predicates: predicates});
     ReactDOM.render(<ContextBoard predicates={predicates}></ContextBoard>, document.getElementById('grounding-container'));
   },
+
+  nextStep: function() {
+    console.log('next step');
+    var s = this.state.step;
+    if (s < 3) {
+      if(this.state.consList.length < 1) {
+        alert('Need at least one rule...');
+        return(1);
+      }
+      s = s+1
+    }
+    this.setState({step: s});
+  },
+
+  prevStep: function() {
+    console.log('prev step');
+    var s = this.state.step;
+    if (s > 1) {
+      s = s-1;
+    }
+    this.setState({step: s});
+  },
   
   render: function() {
+    var btnStyle = { display: 'inline-block', marginRight: 10 };
     var description = "";
     if(this.state.step==1) {
       description = "add rules";
@@ -431,35 +504,38 @@ var PredicateManager = React.createClass({
       return(
         <div className="predicates">
         <h3>{"Step: " + this.state.step + " " + description}</h3>
+        <button onClick={this.prevStep} style={btnStyle} className='btn btn-xs step-bkwd-btn'>Previous Step</button>
+        <button onClick={this.nextStep} style={btnStyle} className='btn btn-xs step-fwd-btn'>Next Step</button>
         {
           this.state.predicates.map(function(predicate, i) {
             return (
               <PredicateComponent
-                 key={i}
-                 index={i}
-                 numPreds={this.state.predicates.length}
-                 numActions={predicate[0].length}
-                 act={predicate[0]}
-                 op={predicate[1]}
-                 cons={predicate[2]}
-                 contextLinks={predicate[3]}
-                 consList={this.state.consList}
-                 updatePredicate={this.updatePredicate}
-                 removePredicate={this.removePredicate}
-                 addPredicate={this.addPredicate}
-                 addVariable={this.addVariable}
-                 addLink={this.addLink}
-                 selectedText={this.props.selectedText}>
+                key={i}
+                index={i}
+                numPreds={this.state.predicates.length}
+                numActions={predicate[0].length}
+                act={predicate[0]}
+                op={predicate[1]}
+                cons={predicate[2]}
+                contextLinks={predicate[3]}
+                consList={this.state.consList}
+                updatePredicate={this.updatePredicate}
+                removePredicate={this.removePredicate}
+                addPredicate={this.addPredicate}
+                addVariable={this.addVariable}
+                addLink={this.addLink}
+                selectedText={this.props.selectedText}
+                step={this.state.step}>
               </PredicateComponent>
-            );
+              );
           }, this)
         }
         </div>
-      );
-    } else {
-      return(false);
-    }
+        );
+  } else {
+    return(false);
   }
+}
 });
 
 var StoryBoard = React.createClass({
@@ -470,14 +546,14 @@ var StoryBoard = React.createClass({
     }
     return { PredicateManagers, i_x: 0, changeBoards: false, selectedText: ""}
   },
-  
+
   setNextBoard: function() {
     var i = this.state.i_x;
     this.setState({i_x: i + 1});
     this.setState({changeBoards: true});
     ReactDOM.render(<ContextBoard predicates={this.getFinalState()[this.state.i_x]}></ContextBoard>, document.getElementById('grounding-container'));
   },
-  
+
   setPrevBoard: function() {
     var i = this.state.i_x;
     this.setState({i_x: i - 1});
@@ -495,33 +571,33 @@ var StoryBoard = React.createClass({
   },
 
   render: function() {
-    //console.log(globalState);
     return(
       <div className="predicate-container">
       {
         this.state.PredicateManagers.map(function(predicate, i) {
           return (
             <PredicateManager
-              key={i}
-              index={i}
-              ref={'manager'+i}
-              i_x={this.state.i_x}
-              selectedText={this.state.selectedText}>
+            key={i}
+            index={i}
+            ref={'manager'+i}
+            i_x={this.state.i_x}
+            selectedText={this.state.selectedText}>
             </PredicateManager>
-          );
+            );
         }, this)
       }
       </div>
     );
   }
 }); // pass idx to each story and render depending if id.
+
 window.app = ReactDOM.render(<StoryBoard />, document.getElementById('predicate-containers'));
 var globalState = [];
 $('#next-btn').click(function() { app.setNextBoard(); });
 $('#prev-btn').click(function() { app.setPrevBoard(); });
 $('#story-container').click(function(e) {
-    var selected_text = $('#story').selection().trim();
-    app.setState({selectedText: selected_text});
+  var selected_text = $('#story').selection().trim();
+  app.setState({selectedText: selected_text});
 });
 
 var ContextBoard = React.createClass({
@@ -537,12 +613,12 @@ var ContextBoard = React.createClass({
                   if(mapping != "") {
                     if(j==20){ // if consequence
                       return(
-                        <div>  {"predicate: "+(i+1) + " consequence: 0" + " word: " + (k+1) +"("+predicate[2].split(" ")[k]+") -> "+mapping} </div>
-                      );
+                        <div>  {"predicate: "+(i+1) + ", consequence: 0" + ", word: " + (k+1) +"("+predicate[2].split(" ")[k]+") -> "+mapping} </div>
+                        );
                     } else {
-                    return(
-                      <div>  {"predicate: "+(i+1) + " variable: " +(j+1) + " word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping} </div>
-                    );
+                      return(
+                        <div>  {"predicate: "+(i+1) + ", variable: " +(j+1) + ", word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping} </div>
+                      );
                     }
                   }
                 },this)
