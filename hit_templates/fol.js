@@ -4,25 +4,30 @@ var ConsequenceComponent = React.createClass({
   },
 
   setLink: function() { // i, j, grounding jth word of ith action
-    this.setState({linking: true});
-    this.setState({linkList: this.props.cons.trim().split(" ")});
-    $('#story').removeClass('noselect');
+    if(this.props.alreadyLinking == false) {
+      this.setState({linking: true});
+      this.setState({linkList: this.props.cons.trim().split(" ")});
+      $('#story').removeClass('noselect');
+      this.props.toggleLink();
+    }
   },
   
   link: function(i) {
     var word = this.state.linkList[i];
     this.refs.linked_element.value= word;
     this.setState({i: i});
+    this.setState({linking: false});
   },
   
   saveLink: function() {
-    if(this.props.selectedText == "" || this.refs.linked_element.value=="") {
-      alert('must ground a word to a phrase in the context');
-      return(1);
-    }
+//    if(this.props.selectedText == "" || this.refs.linked_element.value=="") {
+//      alert('must ground a word to a phrase in the context');
+//      return(1);
+//    }
     this.props.addLink(20, this.state.i, this.props.selectedText);
     $('#story').addClass('noselect');
     this.setState({linking: false});
+    this.props.toggleLink();
   },
   
   render: function() {
@@ -34,7 +39,7 @@ var ConsequenceComponent = React.createClass({
     var linkStyle = {marginTop: 10 };
 
     var s = this.props.step;
-    if(s==1) {
+    if(s==1 || this.props.alreadyLinking == true) { // do for regular action and all tokens as well.
       groundBtnStyle['display'] = 'none';
     } else {
       groundBtnStyle['display'] = '';
@@ -45,8 +50,9 @@ var ConsequenceComponent = React.createClass({
         <div style = {wrapStyle}>
           <div style={linkStyle}>
             <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
-            <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>^</button>
+            <span> ==></span>
             <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
+            <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>submit</button>
           </div>
           <div className="actionText" style={divStyle}>
           {
@@ -63,7 +69,7 @@ var ConsequenceComponent = React.createClass({
       return(
         <div style = {wrapStyle}>
           <div style={linkStyle}>
-            <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>^</button>
+            <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>link</button>
           </div>
           <div ref='consequenceText' className='consequenceText' style={divStyle}>{this.props.cons}</div>
         </div>
@@ -108,9 +114,13 @@ var ActionComponent = React.createClass({
   },
 
   setLink: function() { // i, j, grounding jth word of ith action
-    this.setState({linking: true});    var action = this.getAction();
-    this.setState({linkList: action.trim().split(" ")});
-    $('#story').removeClass('noselect');
+    if(this.props.alreadyLinking == false) {
+      this.setState({linking: true});
+      var action = this.getAction();
+      this.setState({linkList: action.trim().split(" ")});
+      $('#story').removeClass('noselect');
+      this.props.toggleLink();
+    }
   },
 
   link: function(i) {
@@ -120,13 +130,14 @@ var ActionComponent = React.createClass({
   },
   
   saveLink: function() {
-    if(this.props.selectedText == "" ||  this.refs.linked_element.value=="") {
-      alert('must ground a word to a phrase in the context');
-      return(1);
-    }
+//    if(this.props.selectedText == "" ||  this.refs.linked_element.value=="") {
+//      alert('must ground a word to a phrase in the context');
+//      return(1);
+//    }
     this.props.addLink(this.props.index, this.state.i, this.props.selectedText);
     $('#story').addClass('noselect');
-    this.setState({linking: false});
+    this.setState({linking: false}  );
+    this.props.toggleLink();
   },
 
   render: function() {
@@ -143,7 +154,7 @@ var ActionComponent = React.createClass({
     }
 
     var s = this.props.step;
-    if(s==1) {
+    if(s==1 || this.props.alreadyLinking == true) {
       groundBtnStyle['display'] = 'none';
     } else {
       groundBtnStyle['display'] = '';
@@ -188,8 +199,9 @@ var ActionComponent = React.createClass({
           <div style = {wrapStyle}>
             <div style={linkStyle}>
               <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
-              <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>^</button>
+              <span> ==></span>
               <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
+              <button onClick={this.saveLink} className='btn btn-xs link-btn' style={btnStyle}>submit</button>
             </div>
             <div className="actionText" style={divStyle}>
             {
@@ -209,7 +221,7 @@ var ActionComponent = React.createClass({
         return(
           <div style = {wrapStyle}>
             <div style={linkStyle}>
-              <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>^</button>
+              <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>link</button>
             </div>
             <div style = {wrapStyle}>
               <div className="actionText" style={divStyle}>{this.props.adefaultValue}</div>
@@ -228,7 +240,7 @@ var PredicateComponent = React.createClass({
     if(this.props.index == this.props.consList.length) {
       ed = true;
     }
-    return { editing: ed, actions: [], ops:[] }
+    return { editing: ed, actions: [], ops:[], linking: false }
   },
 
   edit: function() {
@@ -285,6 +297,11 @@ var PredicateComponent = React.createClass({
     this.props.addPredicate();
     this.setState({editing: false});
   },
+  
+  setLink: function() {
+    var l = this.state.linking
+    this.setState({linking: !l});
+  },
 
   renderNormal: function() {
     var btnVisibility = "";
@@ -315,14 +332,16 @@ var PredicateComponent = React.createClass({
               addLink={this.addLink}
               contextLinks={this.props.contextLinks[i]}
               selectedText={this.props.selectedText}
-              step={this.props.step}>
+              step={this.props.step}
+              toggleLink={this.setLink}
+              alreadyLinking={this.state.linking}>
               </ActionComponent>
               );
           }, this)
         }
         </div>
         <b>==&gt;</b>
-        <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]}></ConsequenceComponent>
+        <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]} toggleLink={this.setLink} alreadyLinking={this.state.linking}></ConsequenceComponent>
         </div>
       );
     } else {
@@ -358,7 +377,7 @@ var PredicateComponent = React.createClass({
         </div>
         );
       }
-  }, 
+  },
 
   renderForm: function() {
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
@@ -471,12 +490,15 @@ var PredicateManager = React.createClass({
   nextStep: function() {
     console.log('next step');
     var s = this.state.step;
-    if (s < 3) {
+    if (s < 2) {
       if(this.state.consList.length < 1) {
         alert('Need at least one rule...');
         return(1);
       }
       s = s+1
+      if(s > 1) {
+        document.getElementById('context-title').style.display="inline-block";
+      }
     }
     this.setState({step: s});
   },
@@ -484,8 +506,11 @@ var PredicateManager = React.createClass({
   prevStep: function() {
     console.log('prev step');
     var s = this.state.step;
-    if (s > 1) {
+    if (s > 0) {
       s = s-1;
+    }
+    if (s == 1) {
+      document.getElementById('context-title').style.display="none";
     }
     this.setState({step: s});
   },
@@ -497,8 +522,6 @@ var PredicateManager = React.createClass({
       description = "add rules";
     } else if(this.state.step==2) {
       description = "ground rules";
-    } else {
-      description = "modify";
     }
     if(this.props.index == this.props.i_x) {
       return(
