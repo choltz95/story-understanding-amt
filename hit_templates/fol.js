@@ -39,7 +39,7 @@ var ConsequenceComponent = React.createClass({
     var linkStyle = {marginTop: 10 };
 
     var s = this.props.step;
-    if(s==1 || this.props.alreadyLinking == true) { // do for regular action and all tokens as well.
+    if(s==1 || this.props.alreadyLinking == true || this.props.linkToggle == true) { // do for regular action and all tokens as well.
       groundBtnStyle['display'] = 'none';
     } else {
       groundBtnStyle['display'] = '';
@@ -154,7 +154,7 @@ var ActionComponent = React.createClass({
     }
 
     var s = this.props.step;
-    if(s==1 || this.props.alreadyLinking == true) {
+    if(s==1 || this.props.alreadyLinking == true || this.props.linkToggle == true) {
       groundBtnStyle['display'] = 'none';
     } else {
       groundBtnStyle['display'] = '';
@@ -301,6 +301,7 @@ var PredicateComponent = React.createClass({
   setLink: function() {
     var l = this.state.linking
     this.setState({linking: !l});
+    this.props.linkToggler();
   },
 
   renderNormal: function() {
@@ -334,14 +335,15 @@ var PredicateComponent = React.createClass({
               selectedText={this.props.selectedText}
               step={this.props.step}
               toggleLink={this.setLink}
-              alreadyLinking={this.state.linking}>
+              alreadyLinking={this.state.linking}
+              linkToggle = {this.props.linkToggle}>
               </ActionComponent>
               );
           }, this)
         }
         </div>
         <b>==&gt;</b>
-        <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]} toggleLink={this.setLink} alreadyLinking={this.state.linking}></ConsequenceComponent>
+        <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]} toggleLink={this.setLink} alreadyLinking={this.state.linking} linkToggle = {this.props.linkToggle}></ConsequenceComponent>
         </div>
       );
     } else {
@@ -440,6 +442,7 @@ var PredicateManager = React.createClass({
     return {
       predicates: predicates,
       consList: [], // consequence list
+      linkToggle: false,
       step: 1
     }
   },
@@ -486,6 +489,11 @@ var PredicateManager = React.createClass({
     this.setState({predicates: predicates});
     ReactDOM.render(<ContextBoard predicates={predicates}></ContextBoard>, document.getElementById('grounding-container'));
   },
+  
+  toggleLink: function() {
+    var l = this.state.linkToggle;
+    this.setState({linkToggle: !l});
+  },
 
   nextStep: function() {
     console.log('next step');
@@ -504,6 +512,9 @@ var PredicateManager = React.createClass({
   },
 
   prevStep: function() {
+  //  if(this.state.step == 2 && ) {
+      
+//    }
     console.log('prev step');
     var s = this.state.step;
     if (s > 0) {
@@ -548,7 +559,9 @@ var PredicateManager = React.createClass({
                 addVariable={this.addVariable}
                 addLink={this.addLink}
                 selectedText={this.props.selectedText}
-                step={this.state.step}>
+                step={this.state.step}
+                linkToggle={this.state.linkToggle}
+                linkToggler={this.toggleLink}>
               </PredicateComponent>
               );
           }, this)
