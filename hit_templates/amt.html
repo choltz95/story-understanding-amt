@@ -4,13 +4,11 @@
 <form id='results-form' method='post' action='dummy'>
   <input type='hidden' value='' name='assignmentId' id='assignmentId'/>
   <input type='hidden' value='' name='output' id='output'/>
-  <input type='submit' class='btn btn-md btn-success' id='submit-btn' value='Submit' disabled/>
+  <input type='submit' class='btn btn-md btn-success' id='submit-btn' value='Submit Results' disabled/>
 </form>
 <script>
-  var amt = (function() {
-    
-    // Copied from http://james.padolsey.com/javascript/bujs-1-getparameterbyname/
-    function getUrlParam(name) {
+  var amt = (function() { // type='submit'
+      function getUrlParam(name) {
       var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
       return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : null;
     }

@@ -1,4 +1,4 @@
-   var input_size = 0;
+var input_size = 0;
 var idx = 0;
 $(function() {
     // Default input to be used during development.
@@ -8,6 +8,7 @@ $(function() {
 
     var input = null;
     var descriptions = [];
+    var endings = []
     var enabled = false;
 
     function main() {
@@ -18,6 +19,11 @@ $(function() {
 
         // Set up the descriptions.
         _.each(input, function() { descriptions.push(''); });
+        
+        for (var i=0; i<descriptions.length; i++) {
+          var ending = "";
+          endings.push();
+        }
 
         // If the HIT is not in preview mode, then we need to enable the UI
         // and set up the logic for submitting.
@@ -89,7 +95,34 @@ $(function() {
             var output = _.map(_.zip(input, descriptions, predicates), function(x) {
                 return {'story': x[0], 'description': x[1], 'predicates':x[2]};
             });
-            amt.setOutput(output);
+            console.log(output[0]);
+            var predicates = output[0]['predicates'];
+            var csvOutput=[{}];
+            for(var i=0; i< predicates.length; i++) {
+              console.log(predicates[i]);
+              csvOutput[i]['predicate'] = i;
+              for(var j=0; j < predicates[i][0].length;j++) { // actions
+                csvOutput[i]['action'+j] = predicates[i][0][j];
+              }
+              for(var k=0; k < predicates[i][1].length;k++) { // operations
+                csvOutput[i]['operator'+k] = predicates[i][1][k];
+              }
+              csvOutput[i]['consequence'] = predicates[i][2];
+
+              for(var l in predicates[i][3]) { // lth action that contains grounded word in predicate
+                for(var m in l) { // mth grounded word in action
+                  if (predicates[i][3][l].hasOwnProperty(m)) {
+                    if(predicates[i][3][l][m] !="") {
+                      //console.log(l+ "-> " + m + " -> " + predicates[i][3][l][m]);
+                      csvOutput[i]['groundedTokenIndex'+l+"-"+m] = predicates[i][3][l][m];
+                    }
+                  }
+                }
+              }
+            }
+            
+            //console.log(csvOutput);
+            amt.setOutput(csvOutput);
             //}
         });
     }

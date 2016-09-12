@@ -1,14 +1,13 @@
 import argparse, json
 
+import boto3
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.qualification import *
 from jinja2 import Environment, FileSystemLoader
 
-
 """
 A bunch of free functions that we use in all scripts.
 """
-
 
 def get_jinja_env(config):
   """
@@ -54,6 +53,7 @@ def get_mturk_connection(sandbox=True, aws_access_key=None,
   MTurkConnection constructor; the only difference is a boolean
   flag to indicate sandbox or not.
   """
+  
   kwargs = {}
   if aws_access_key is not None:
     kwargs['aws_access_key_id'] = aws_access_key
@@ -72,10 +72,10 @@ def setup_qualifications(hit_properties):
   Replace some of the human-readable keys from the raw HIT properties
   JSON data structure with boto-specific objects.
   """
+  
   qual = Qualifications()
   if 'country' in hit_properties:
-    qual.add(LocaleRequirement('EqualTo',
-      hit_properties['country']))
+    qual.add(LocaleRequirement('In', hit_properties['country']))
     del hit_properties['country']
 
   if 'hits_approved' in hit_properties:
@@ -87,5 +87,7 @@ def setup_qualifications(hit_properties):
     qual.add(PercentAssignmentsApprovedRequirement('GreaterThan',
       hit_properties['percent_approved']))
     del hit_properties['percent_approved']
+    
+  qual.add(Requirement(qualification_type_id="3EA8NGC4CJCA1UW0FL59PBSJMND34C",comparator='GreaterThan',integer_value=9))
 
   hit_properties['qualifications'] = qual

@@ -1,0 +1,77 @@
+todo: verify custom option works for structured rules w/ custom custom value, refactor
+
+BTW, we should add some examples of the task right on top of the HIT, after instructions. You can refer to the ROCNLP HITs for instance, they all provide both collapsible instructions and examples. U can use two story cloze test examples here for writing your examples: http://cs.rochester.edu/nlp/rocstories/
+
+As for the qualification test, we would need a couple of multiple-choice questions. The qualification test should also have its own instructions and examples. Please look at examples from the ROCNLP qual tests: https://www.mturk.com/mturk/searchbar?selectedSearchType=quals&searchWords=ROCNLP&minReward=0.00&x=0&y=0
+
+
+As for the qual test questions, we can just ask them about the correctness of some rules that we should them given a story cloze test instance. Then ask them to judge if it'ss correct, or if it's wrong in XYZ --this model has worked before in training the workers. Feel free to modify things as u wish as well.
+
+Thanks
+
+******
+
+This looks good. The task is actually to write explanations for how and ending to a story is a correct one, so writing explanations for the 'story cloze test', maybe that was lost in our communications somewhere. I know that the HITs you've been setting up only contain the context, but we will be mainly asking them why they think the ending makes sense, where the explanations start (this was one of the things to change when we work on cosmetic issues next.).
+
+So now we will show them the four-sentence story along with an ending (which is basically the fifth sentence which can be put in the same context textbox which is groundable, but let's show it kind of separately so that they know that's the focus), then we ask them to explain why they think a certain ending is a correct one.
+
+So your qual test looks very good, just let's reframe it to reflect that they are going to explain about the ending.
+
+Eventually we will make the task be really 'story cloze test' where they will also choose en ending and then start explaining why they made a certain choice, but for now let's just focus on what we have
+
+******
+
+
+Imagine that you want to describe to a friend why a 5 sentence story ends in the way it does as opposed to having a different conclusion. The story can be about something that happened, something you or someone else has experienced in the past, or simply any life story about someone or something. Your task is derive and ground general rules from the context. To do this,
+
+Read the context carefully.
+Construct some rules (Step 1) by:
+  Providing statements on left-hand-side of an implication-symbol
+  An implication to the right hand side
+Ground these rules by linking general terms to specific phrases and elements in the context (Step 2).
+
+Properties of good rules and groundings are provided below.
+
+Example 1:
+  Context: Jim got his first credit card in college. He didn’t have a job so he bought everything on his card. After he graduated he amounted a $10,000 debt. Jim realized that he was foolish to spend so much money.
+  
+  Correct concluding sentence: Jim decided to devise a plan for repayment.
+
+  Incorrect concluding sentence: Jim decided to open another credit card.
+
+Step 1 (constructing rules) - Your rules should be easily derivable from the context. Each rule should be composed of a subject, a predicate, and an object and should be as general as possible. Do not include specific elements from the context in your rule. To simplify the process, a number of sample objects/subjects are provided for you.
+
+  Good rules: context => someone buys something
+              context => someone uses something
+              someone buys something and someone uses something => someone has something
+
+  Bad rules: context => something is someone
+
+Step 2 (grounding elements) - The context and rule elements you link between should be logically related. You should associate characters, items, and ideas.
+  Good links: someone(1)   -> Jim
+              someone(2)   -> Jim
+              something(1) -> everything
+              someone(3)   -> Jim
+              something(2) -> credit card
+              someone(4)   -> Jim
+              something(3) -> debt
+
+  Bad links: something -> realized
+
+Example 2:
+  Context: Gina misplaced her phone at her grandparents. It wasn’t anywhere in the living room. She realized she was in the car before. She grabbed her dad’s keys and ran outside.
+
+  Correct concluding sentence: She didn’t want her phone anymore.
+
+  Incorrect concluding sentence: She found her phone in the car.
+
+Step 1 (constructing rules) -
+  Good rules: context => someone misplaces something
+
+  Bad rules: context => something is someone
+
+Step 2 (grounding elements) -
+  Good links: someone -> Jim
+              something -> everything
+
+  Bad links: something -> realized

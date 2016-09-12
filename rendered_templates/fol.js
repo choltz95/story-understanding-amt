@@ -1,4 +1,94 @@
-var ConsequenceComponent = React.createClass({
+           // Parameters
+var stopList = "a about above across after again against almost alone along already also although always an and another any as ask asked asking asks at away b back backed backing backs be became because become becomes been before began behind being beings best better between big both but by c came can cannot case cases certain certainly clear clearly come could d did differ different differently do does done down down downed downing downs during e each early either end ended ending ends enough even evenly ever f face faces fact facts far felt few find finds for four full fully further furthered furthering furthers g gave general generally get gets give given gives go going good goods got great greater greatest group h had has have having here herself high high high higher highest how however if important in interest interested interesting interests into is it its itself j just k keep keeps kind knew know known knows l large largely last later latest least less let lets like likely long longer longest m made make making might more most mostly mr mrs much must n necessary need needed needing needs never new new newer newest next not now number numbers o of off often old older oldest on only open opened opening opens or order ordered ordering orders other others our out over p part parted parting parts per perhaps place places point pointed pointing points possible present presented presenting presents put puts q quite r rather really right right room rooms s said same saw say says second seconds see seem seemed seeming seems sees several shall should show showed showing shows side sides since small smaller smallest so some states still still such sure t take taken than that the then there therefore think thinks though thought thoughts three through thus to today too took toward turn turned turning turns two u under until up upon use used uses v very w want wanted wanting wants was way ways well wells went were what when where whether which while who whole whose why will with within without work worked working works would x y year years yet you young younger youngest z";
+
+var defaultObjects = ["someone", "something"];
+   
+var InstructionComponent = React.createClass({
+  getInitialState: function() {
+    return { minimized: false }
+  },
+  
+  minMaximize: function() {
+    var m = !this.state.minimized;
+    this.setState({minimized: m});
+  },
+  
+  render: function() {
+    var instrStyle = {border: "1px solid black", marginTop: 15};
+    var ulStyle = {textAlign: 'left'};
+    var headerStyle = {display: 'inline-block', textAlign: 'center', marginLeft: 250};
+    var btnStyle = {marginLeft: 5};
+    var pStyle = {marginRight: 5, marginLeft: -5};
+    var divStyle = {paddingTop: 15};
+    if(this.state.minimized == true) {
+      return(
+        <div style={instrStyle}>
+          <ul>
+            <h4 style = {headerStyle}><b>Instructions and Examples</b></h4>
+            <button onClick={this.minMaximize} className='btn btn-xs' style={btnStyle}>SHOW</button>
+          </ul>
+        </div>
+      );
+    }  else {
+      return(
+        <div style={instrStyle}>
+          <ul>
+            <h4 style = {headerStyle}><b>Instructions and Examples</b></h4>
+            <button onClick={this.minMaximize} className='btn btn-xs' style={btnStyle}>HIDE</button>
+            <p style={pStyle}>
+            Imagine that you want to describe to a friend why a short story ends in the way it does as opposed to having a different conclusion. The story can be about something that happened, something you or someone else has experienced in the past, or simply any life story about someone or something. Your task is derive and ground general rules from the context to explain why an arbitrary fifth-sentence ending logically follows a four-sentence context.
+            </p>
+            <li>Read the story to the right carefully.</li>
+            <li>Construct some rules (Step 1) by:</li>
+              <ul style = {ulStyle}>
+                <li>Providing statements on left-hand-side of an implication-symbol</li>
+                <li>An implication to the right hand side</li>
+              </ul>
+            <li>Ground these rules by linking terms to phrases in either the context or the given fifth sentence (Step 2).</li>
+            <p style={pStyle}>Properties of good rules and groundings are provided below.</p>
+            <h4><b>Example</b></h4>
+            <li>Context: Jim got his first credit card in college. He didn't have a job so he bought everything on his card. After he graduated he amounted a $10,000 debt. Jim realized that he was foolish to spend so much money.</li>
+            <li>Correct fifth-sentence: Jim decided to devise a plan for repayment.</li>
+            <p style={pStyle}> <b>Step 1 (constructing rules)</b> - Your rules should be easily derivable from the context and should be focusing on answering <b><i>why</i></b> the given fifth sentence is correct. Each rule should be composed of a subject, a predicate, and an object and should be as general as possible. Do not include specific elements from the context in your rule. To simplify the process, a number of sample objects/subjects are provided for you.</p>
+            <li>Good rules: </li>
+              <ul style = {ulStyle}>
+                <li>context => someone(1) buys something(1)</li>
+                <li>context => someone(2) uses something(2)</li>
+                <li>someone(3) buys something(3) and someone(4) uses something(4) => someone(5) has something(5)</li>
+              </ul>
+            <li>Bad rules: </li>
+              <ul style = {ulStyle}>
+                <li>context => something is someone</li>
+              </ul>
+            <p style={pStyle}><b>Step 2 (grounding elements)</b> - The context and rule elements you link between should be logically related. You should associate characters, items, and ideas.</p>
+            <li>Good links: </li>
+              <ul style = {ulStyle}>
+                <li>someone(1)  &nbsp;&nbsp;-> Jim</li>
+                <li>something(1) -> everything</li>
+                <li>someone(2)  &nbsp;&nbsp;-> Jim</li>
+                <li>something(2) -> credit card</li>
+                <li>someone(3)  &nbsp;&nbsp;-> Jim</li>
+                <li>something(3) -> everything</li>
+                <li>someone(4)  &nbsp;&nbsp;-> Jim</li>
+                <li>something(4) -> credit card</li>
+                <li>someone(4)  &nbsp;&nbsp;-> Jim</li>
+                <li>something(4) -> debt</li>
+                <li>...</li>
+              </ul>
+            <li>Bad links: </li>
+              <ul style = {ulStyle}>
+                <li>someone(1)  &nbsp;&nbsp;-> job</li>
+                <li>something(1)  -> realized</li>
+              </ul>
+          </ul>
+        </div>
+      );
+    }
+  }
+});
+ReactDOM.render(<InstructionComponent />, document.getElementById('instruction-div'));
+
+var ConsequenceComponent = React.createClass({ // fix 20 index button linking
   getInitialState: function() {
     return { linking: false, linkList: [], i:-1 }
   },
@@ -14,16 +104,12 @@ var ConsequenceComponent = React.createClass({
   
   link: function(i) {
     var word = this.state.linkList[i];
-    this.refs.linked_element.value= word;
+    console.log(word);
+    this.refs.linked_element.value = word;
     this.setState({i: i});
-    this.setState({linking: false});
   },
   
   saveLink: function() {
-//    if(this.props.selectedText == "" || this.refs.linked_element.value=="") {
-//      alert('must ground a word to a phrase in the context');
-//      return(1);
-//    }
     this.props.addLink(20, this.state.i, this.props.selectedText);
     $('#story').addClass('noselect');
     this.setState({linking: false});
@@ -36,7 +122,7 @@ var ConsequenceComponent = React.createClass({
     var wrapStyle = { display: 'inline-block' };
     var linkedElementStyle = { display: 'inline-block', width: 50, overflow:'hidden', marginBottom:-8, marginLeft:5 };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
-    var linkStyle = {marginTop: 10 };
+    var linkStyle = {marginTop: 10, textAlign: 'center' };
 
     var s = this.props.step;
     if(s==1 || this.props.alreadyLinking == true || this.props.linkToggle == true) { // do for regular action and all tokens as well.
@@ -45,7 +131,7 @@ var ConsequenceComponent = React.createClass({
       groundBtnStyle['display'] = '';
     }
 
-    if(this.state.linking == true){
+    if(this.state.linking == true && this.props.step == 2){
       return (
         <div style = {wrapStyle}>
           <div style={linkStyle}>
@@ -57,9 +143,13 @@ var ConsequenceComponent = React.createClass({
           <div className="actionText" style={divStyle}>
           {
             this.state.linkList.map(function(word, i) {
-              return (
-                <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
+              if (stopList.includes(word)) {
+                return(" " + word + " ");
+              } else {
+                return (
+                  <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
                 );
+              }
             },this)
           }
           </div>
@@ -71,7 +161,7 @@ var ConsequenceComponent = React.createClass({
           <div style={linkStyle}>
             <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>link</button>
           </div>
-          <div ref='consequenceText' className='consequenceText' style={divStyle}>{this.props.cons}</div>
+            <div ref='consequenceText' className='consequenceText' style={divStyle}>{this.props.cons}</div>
         </div>
       );
     }
@@ -80,11 +170,20 @@ var ConsequenceComponent = React.createClass({
 
 var ActionComponent = React.createClass({
   getInitialState: function() {
-    return { op: this.props.opdefaultValue, act: this.props.adefaultValue, customValue: false, linking: false, linkList: [], i:-1 }
+    return { op: this.props.opdefaultValue,
+             act: this.props.adefaultValue,
+             customValue: false,
+             customCustomValue: false,
+             linking: false,
+             linkList: [],
+             i:-1 }
   },
   getAction: function() {
     if(this.state.customValue == true){
-      return(this.refs.action.value);
+      var actionSubject = this.refs.actionSubject.value;
+      var actionPredicate = this.refs.actionPredicate.value;
+      var actionObject = this.refs.actionObject.value;
+      return(actionSubject + " " + actionPredicate + " " + actionObject);
     } else {
       return(this.state.act);
     }
@@ -130,10 +229,6 @@ var ActionComponent = React.createClass({
   },
   
   saveLink: function() {
-//    if(this.props.selectedText == "" ||  this.refs.linked_element.value=="") {
-//      alert('must ground a word to a phrase in the context');
-//      return(1);
-//    }
     this.props.addLink(this.props.index, this.state.i, this.props.selectedText);
     $('#story').addClass('noselect');
     this.setState({linking: false}  );
@@ -142,11 +237,12 @@ var ActionComponent = React.createClass({
 
   render: function() {
     var btnStyle = { marginLeft: 5, marginRight: 0 };
-    var groundBtnStyle = { marginLeft: 5, marginRight: 0 };
+    var objectStyle = {marginRight: 5};
+    var groundBtnStyle = { marginLeft: 5, marginRight: 0};
     var wrapStyle = { display: 'inline-block' };
     var linkedElementStyle = { display: 'inline-block', width: 50, overflow:'hidden', marginBottom:-8, marginLeft:5 };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
-    var linkStyle = {marginTop: 10 };
+    var linkStyle = {marginTop: 10, textAlign: 'center' };
     if(this.props.index == this.props.numActions-1) {
       var selectStyle = { display: 'none' };
     } else {
@@ -159,12 +255,28 @@ var ActionComponent = React.createClass({
     } else {
       groundBtnStyle['display'] = '';
     }
+    
+    var actionSubjectDefault = this.props.adefaultValue.split(" ")[0];
+    var actionPredicateDefault = this.props.adefaultValue.split(" ").slice(1, -1).join(" ");
+    var actionObjectDefault = this.props.adefaultValue.split(" ").slice(-1)[0];
 
     if(this.props.edit == true) {
       if (this.state.customValue == true) {
         return(
           <div style = {wrapStyle}>
-            <textarea ref='action' rows="1" maxLength="50" placeholder="action" defaultValue={this.props.adefaultValue} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+            <select ref='actionSubject' defaultValue={actionSubjectDefault} onChange={this.objectChange} style={btnStyle}>
+              <option value="someone">someone</option>
+              <option value="something">something</option>
+              <option value="somewhere">somewhere</option>
+              <option value="customOption">[custom variable]</option>
+            </select>
+            <textarea ref='actionPredicate' rows="1" maxLength="50" placeholder="action" defaultValue={actionPredicateDefault} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+            <select ref='actionObject' defaultValue={actionObjectDefault} onChange={this.objectChange} style={objectStyle}>
+              <option value="someone">someone</option>
+              <option value="something">something</option>
+              <option value="somewhere">somewhere</option>
+              <option value="customOption">[custom variable]</option>
+            </select>
             <select ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
               <option value="&&">&amp;&amp;</option>
               <option value="||">||</option>
@@ -176,16 +288,15 @@ var ActionComponent = React.createClass({
           <div style={wrapStyle}>
             <select ref='action' style={divStyle} onChange={this.actChangeHandler}>
               <option value={this.props.adefaultValue}>{this.props.adefaultValue}</option>
-              <option value="context">*context*</option>
-              <option value="customOption">[custom variable]</option>
+              <option value="context">context</option>
               {
                 this.props.consList.map(function(consequence) {
                   return(<option key={consequence}
                     value={consequence}>{consequence}</option>);
                 })
               }
+              <option value="customOption">[custom variable]</option>
             </select>
-
             <select ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
               <option value="&&">&amp;&amp;</option>
               <option value="||">||</option>
@@ -194,7 +305,7 @@ var ActionComponent = React.createClass({
           );
       }
     } else {
-      if(this.state.linking == true){
+      if(this.state.linking == true  && this.props.step == 2){
         return(
           <div style = {wrapStyle}>
             <div style={linkStyle}>
@@ -206,9 +317,13 @@ var ActionComponent = React.createClass({
             <div className="actionText" style={divStyle}>
             {
               this.state.linkList.map(function(word, i) {
-                return (
-                  <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
+                if (stopList.includes(word)) {
+                  return(" " + word + " ");
+                } else {
+                  return (
+                    <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
                   );
+                }
               },this)
             }
             </div>
@@ -267,15 +382,17 @@ var PredicateComponent = React.createClass({
         ops.push(this.refs[ref].getOp());
       }
     }
-    var consequence = this.refs.consequence.value.trim();
+    var consequencePredicate = this.refs.consequencePredicate.value.trim();
+    var consequenceSubject = this.refs.consequenceSubject.value.trim();
+    var consequenceObject = this.refs.consequenceObject.value.trim();
     for (var i=0;i<actions.length;i++) {
       console.log('action: ' +actions[i]);
-      if(actions[i] == "" || consequence == "") {
+      if(actions[i] == "" || consequencePredicate == "") {
         alert("Can't save empty variable");
         return false;
       }
     }
-    this.props.updatePredicate(actions, ops, consequence,this.props.index);
+    this.props.updatePredicate(actions, ops, consequenceSubject + " " + consequencePredicate + " " + consequenceObject, this.props.index);
     this.setState({editing: false});
   },
 
@@ -380,11 +497,19 @@ var PredicateComponent = React.createClass({
         );
       }
   },
+  
+  subjectChange: function() { },
+  
+  objectChange: function() { },
 
   renderForm: function() {
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
     var inlineBlock = { display: 'inline-block', marginLeft:10 };
     var btnStyle = { marginLeft: 5, marginRight:-10 };
+    
+    var consequenceSubjectDefault = this.props.cons.split(" ")[0];
+    var consequencePredicateDefault = this.props.cons.split(" ").slice(1, -1).join(" ");
+    var consequenceObjectDefault = this.props.cons.split(" ").slice(-1)[0];
 
     return (
       <div className='predicate'>
@@ -415,7 +540,19 @@ var PredicateComponent = React.createClass({
         <select>
           <option value="==>">==&gt;</option>
         </select>
-        <textarea ref='consequence' rows="1" maxLength="50" placeholder="consequence" defaultValue={this.props.cons} style={divStyle}></textarea>
+        <select ref='consequenceSubject' style={inlineBlock} defaultValue={consequenceSubjectDefault} onChange={this.subjectChange}>
+          <option value="someone">someone</option>
+          <option value="something">something</option>
+          <option value="somewhere">somewhere</option>
+          <option value="customOption">[custom variable]</option>
+        </select>
+        <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="16" placeholder="consequence" defaultValue={consequencePredicateDefault} style={divStyle}></textarea>
+        <select ref='consequenceObject' defaultValue={consequenceObjectDefault} onChange={this.objectChange}>
+          <option value="someone">someone</option>
+          <option value="something">something</option>
+          <option value="somewhere">somewhere</option>
+          <option value="customOption">[custom variable]</option>
+        </select>
         <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>Save Rule</button>
         <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={inlineBlock}>Remove Rule</button>
       </div>
@@ -443,7 +580,7 @@ var PredicateManager = React.createClass({
       predicates: predicates,
       consList: [], // consequence list
       linkToggle: false,
-      step: 1
+      step: 1,
     }
   },
 
@@ -506,22 +643,21 @@ var PredicateManager = React.createClass({
       s = s+1
       if(s > 1) {
         document.getElementById('context-title').style.display="inline-block";
+        document.getElementById('grounding-container').style.display="inline-block";
       }
     }
     this.setState({step: s});
   },
 
   prevStep: function() {
-  //  if(this.state.step == 2 && ) {
-      
-//    }
     console.log('prev step');
     var s = this.state.step;
-    if (s > 0) {
+    if (s > 1) {
       s = s-1;
     }
     if (s == 1) {
       document.getElementById('context-title').style.display="none";
+      document.getElementById('grounding-container').style.display="none";
     }
     this.setState({step: s});
   },
@@ -530,16 +666,20 @@ var PredicateManager = React.createClass({
     var btnStyle = { display: 'inline-block', marginRight: 10 };
     var description = "";
     if(this.state.step==1) {
-      description = "add rules";
+      description = "Add rules";
     } else if(this.state.step==2) {
-      description = "ground rules";
+      description = "Ground rules";
     }
     if(this.props.index == this.props.i_x) {
       return(
         <div className="predicates">
-        <h3>{"Step: " + this.state.step + " " + description}</h3>
-        <button onClick={this.prevStep} style={btnStyle} className='btn btn-xs step-bkwd-btn'>Previous Step</button>
-        <button onClick={this.nextStep} style={btnStyle} className='btn btn-xs step-fwd-btn'>Next Step</button>
+        <div className="row">
+        <div className="col-md-4 col-md-offset-5">
+          <h3>{"Step: " + this.state.step + " " + description}</h3>
+          <button onClick={this.prevStep} style={btnStyle} className='btn btn-sm step-bkwd-btn btn-primary'>Previous Step</button>
+          <button onClick={this.nextStep} style={btnStyle} className='btn btn-sm step-fwd-btn btn-primary'>Next Step</button>
+        </div>
+        </div>
         {
           this.state.predicates.map(function(predicate, i) {
             return (
@@ -627,19 +767,11 @@ var StoryBoard = React.createClass({
   }
 }); // pass idx to each story and render depending if id.
 
-window.app = ReactDOM.render(<StoryBoard />, document.getElementById('predicate-containers'));
-var globalState = [];
-$('#next-btn').click(function() { app.setNextBoard(); });
-$('#prev-btn').click(function() { app.setPrevBoard(); });
-$('#story-container').click(function(e) {
-  var selected_text = $('#story').selection().trim();
-  app.setState({selectedText: selected_text});
-});
-
 var ContextBoard = React.createClass({
   render: function() {
+    var contextStyle = {};//{display: };
     return(
-      <div className="contexts">
+      <div className="contexts" style={contextStyle}>
       {
         this.props.predicates.map(function(predicate, i) { // ith predicate
           return (
@@ -666,4 +798,13 @@ var ContextBoard = React.createClass({
       </div>
     );
   }
+});
+
+window.app = ReactDOM.render(<StoryBoard />, document.getElementById('predicate-containers'));
+var globalState = [];
+//$('#next-btn').click(function() { app.setNextBoard(); });
+//$('#prev-btn').click(function() { app.setPrevBoard(); });
+$('#story-container').click(function(e) {
+  var selected_text = $('#story').selection().trim();
+  app.setState({selectedText: selected_text});
 });

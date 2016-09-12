@@ -1,10 +1,10 @@
 {
   "title": "Story Understanding",
-  "description": "Highlight important components of the text.",
-  "keywords": "story,understanding,write,writing,sentence",
-  "reward": 0.05,
-  "duration": 900,
-  "frame_height": 20000,
+  "description": "In this task you should compose a set of rules that describe the reason a short story ends the way it does.",
+  "keywords": "story,write,writing,sentence",
+  "reward": 0.23,
+  "duration": 3600,
+  "frame_height": 1000,
   "max_assignments": 1,
-  "country": "US"
+  "country": ["IE","NZ","GB","US"]
 }

@@ -1,0 +1,1 @@
+{"assignment_id": "39LOEL67OS5LKSVOQEI6JWI5TMP38W", "output": [{"consequence": "someone qwer someone", "operator0": "&&", "predicate": 0, "action0": "context", "groundedTokenIndex20-1": "he show was absolutely exhilarating."}], "worker_id": "A2BFMUT1G9S2XA", "hit_id": "3F6045TU7DO5QF5LMDKSLLLM0FR99X"}
