@@ -1,8 +1,8 @@
 {
-  "title": "Story Understanding",
+  "title": "Construct General Rules From Context",
   "description": "In this task you should compose a set of rules that describe the reason a short story ends the way it does.",
   "keywords": "story,write,writing,sentence",
-  "reward": 0.23,
+  "reward": 0.35,
   "duration": 3600,
   "frame_height": 1000,
   "max_assignments": 1,

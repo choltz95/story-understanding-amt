@@ -88,6 +88,6 @@ def setup_qualifications(hit_properties):
       hit_properties['percent_approved']))
     del hit_properties['percent_approved']
     
-  qual.add(Requirement(qualification_type_id="3EA8NGC4CJCA1UW0FL59PBSJMND34C",comparator='GreaterThan',integer_value=9))
-
+#  qual.add(Requirement(qualification_type_id="3TDQPWMDS877YXAXCWP6LHT0FJRANT",comparator='GreaterThan',integer_value=9))
+# 3TDQPWMDS877YXAXCWP6LHT0FJRANT
   hit_properties['qualifications'] = qual

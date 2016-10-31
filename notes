@@ -1,4 +1,4 @@
-todo: verify custom option works for structured rules w/ custom custom value, refactor
+todo: verify custom option works for structured rules w/ custom custom value, refactor, seperate textarea for 5th sentence
 
 BTW, we should add some examples of the task right on top of the HIT, after instructions. You can refer to the ROCNLP HITs for instance, they all provide both collapsible instructions and examples. U can use two story cloze test examples here for writing your examples: http://cs.rochester.edu/nlp/rocstories/
 
@@ -75,3 +75,6 @@ Step 2 (grounding elements) -
               something -> everything
 
   Bad links: something -> realized
+
+
+TODO: instructions, linking shit by color, prevent submission without complete linking of objects, custom objects

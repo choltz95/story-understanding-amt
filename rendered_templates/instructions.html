@@ -1,0 +1,146 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- amt depends on these libraries -->
+    <script src="https://npmcdn.com/react@15.3.1/dist/react.js"></script>
+    <script src="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.js"></script>
+    <!--<script src="browser.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>
+    <!-- get text selection -->
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery.selection/1.0.1/jquery.selection.min.js'></script>
+    <!-- end of required libraries -->
+    <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js'></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+       <style>
+/*
+global style attributes - organize later
+*/
+      * {
+        margin-bottom:4px;
+      }
+      .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none;   /* Chrome/Safari/Opera */
+        -khtml-user-select: none;    /* Konqueror */
+        -moz-user-select: none;      /* Firefox */
+        -ms-user-select: none;       /* Internet Explorer/Edge */
+        user-select: none;           /* Non-prefixed version */
+      }
+ /*     .predicate:hover{
+        background: #EEEEEE;
+      }*/
+      #text-area {
+        margin: 10px 0;
+        font-size: 10pt;
+        min-height: 65px;
+        cursor: text;
+        resize: none;
+      }
+      textarea {
+        resize: none;
+      }
+      #story {
+        margin: 10px 0;
+        font-size: 10pt;
+        min-height: 150px;
+        min-width: 800px;
+        cursor: text;
+      }
+      #story-ending {
+        cursor: text;
+      }
+      #button-div {
+        margin-bottom: 10px;
+      }
+      #counter {
+        margin: 0 10px;
+        font-size: 16pt;
+        font-weight: bold;
+      }
+      #instructions {
+        margin: 10px 0;
+        font-size: 9pt;
+        min-height: 55px;
+      }
+      li {
+        text-align: left;
+        padding: 0;
+        margin: 0;
+    }
+    </style>
+  </head>
+  <body>
+<!--
+NOTES TO MAP InstructionComponent render() FROM REACT TO REGULAR HTML
+var bStyle = {color: 'blue'},   style="color:blue;"
+    rStyle = {color: 'red'},    style="color:red;"
+    pStyle = {color: 'purple'}, style="color:purple;"
+    gStyle = {color: 'green'},  style="color:green;"
+    oStyle = {color: 'orange'}, style="color:orange;"
+    yStyle = {color: 'yellow'}, style="color:yellow;"
+    mStyle = {color: 'magenta'},style="color:magenta;"
+    olStyle = {color: 'olive'}  style="color:olive;"
+/***********/
+var instructionStyle = {border: "1px solid black", marginTop: 15};style="border-style:solid; border-width:1px; margin-top: 15px;"
+var ulStyle = {textAlign: 'left'};                                style="text-align:left;"
+var headerStyle = {display: 'inline-block', textAlign: 'center', marginLeft: 250}; style="display:inline-block; text-align:center; margin-left:250px;"
+var btnStyle = {marginLeft: 5};                                   style="margin-left:5px;"
+var paragraphStyle = {marginRight: 30, marginLeft: -5};           style="margin-right:30px;margin-left:-5px;"
+var divStyle = {paddingTop: 15};                                  style="padding-top:15px;"
+-->
+    <div class='col-md-10 col-md-offset-1' style="border-style:solid; border-width:1px; margin-top: 15px;">
+      <ul>
+        <h4 style="display:inline-block; text-align:center; margin-left:250px;"><b>Instructions and Examples</b></h4>
+        <button onClick={this.minMaximize} className='btn btn-xs' style="margin-left:5px;">HIDE</button>
+        <p style="margin-right:30px;margin-left:-5px;">
+        <b><u>Imagine that you want to describe to a 5-year old kid why a short story ends in the way it does</u></b> as opposed to having a different conclusion. <b><u>Your task is to derive and ground general inference rules from the context</u></b> to explain why an arbitrary fifth-sentence ending logically follows a four-sentence context. An inference rule has an easy basic logical reasoning that we all do on a daily basis: it has a few <b>left-hand-side premises</b> which result in (an implication) <b>some right-hand-side consequence.</b>  Please see below for more examples.
+        </p>
+        <h4><b>Your task has TWO steps:</b></h4>
+        <li><b>1- Construct</b> some inference rules (Step 1) by:</li>
+          <ul style="text-align:left;">
+            <li><i>Selecting a subject</i>, <i>writing</i> a predicate, and <i>selecting</i> an object on the left-hand-side of an implication-symbol</li>
+            <li><i>Constructing</i> an implication to the right hand side</li>
+          </ul>
+        <p style="margin-right:30px;margin-left:-5px;"> Remember, your rules should be easily <b>derivable</b> from the context and should be focused on answering <b><i>why</i></b> the given fifth sentence is correct. Each rule should be composed of a <b>subject</b>, a <b>predicate</b>, and an <b>object</b> and should be as <b>general</b> as possible. Do not include specific elements from the context in your rule. To simplify the process, a number of sample objects/subjects are provided for you.</p>
+       
+        <li><b>2- Ground</b> these rules to the story to make them specific. Do this by linking terms to phrases in either the context or the given fifth sentence (Step 2).</li>
+        
+        <p style="margin-right:30px;margin-left:-5px;">Properties of good rules and groundings are provided below.</p>
+        
+        <h4><b>Example</b></h4>
+        <h4>The given story is as follows:</h4>
+        <li>Context: Karen was assigned a roommate her first year of college. Her roommate asked her to go to a nearby city for a concert. Karen agreed happily. The show was absolutely exhilarating.</li>
+        <li>correct 5th sentence: Karen became good friends with her roommate. </li>
+        
+        <li>Good, generic inference rules for the above: </li>
+          <ul style="text-align:left;">
+            <li><span style="color:blue;">Someone</span> is not friends with <span style="color:red;">someone</span> <b>and</b> <span style="color:purple;">someone</span> goes out with <span style="color:green;">someone</span> <b>and</b> <span style="color:orange;">someone</span> enjoys <span style="color:yellow;">it</span> <b>=></b> <span style="color:magenta;">someone</span> becomes friends with <span style="color:olive;">someone</span></li>
+          </ul>
+        <li>Bad inference rules: </li>
+          <ul style="text-align:left;">
+            <li>Someone(Karen's roommate) asks out someone(Karen) <b>and</b> something(this show) was exhilarating <b>=></b> someone(roommate) agrees happily</li>
+          </ul>
+        <p style="margin-right:30px;margin-left:-5px;"><h4><b>Step 2 (grounding elements)</b></h4> - The context and rule elements you link between should be logically related. You should associate characters, items, and ideas.</p>
+        <li>Good links: </li>
+          <ul style="text-align:left;">
+            <li><span style="color:blue;">someone -> Karen</span></li>
+            <li><span style="color:red;">someone -> Karen's roommate</span></li>
+            <li><span style="color:purple;">someone -> Karen</span></li>
+            <li><span style="color:green;">someone -> Karen's roommate</span></li>
+            <li><span style="color:orange;">someone -> Karen</span></li>
+            <li><span style="color:yellow;">it &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -> going out</span></li>
+            <li><span style="color:magenta;">someone -> Karen</span></li>
+            <li><span style="color:olive;"someone -> Karen's roommate</span></li>
+          </ul>
+        <li>Bad links: </li>
+          <ul style="text-align:left;">
+            <li>someone  &nbsp;&nbsp;-> goes out</li>
+            <li>something  -> becomes</li>
+          </ul>
+      </ul>
+    </div>
+  </body>
+</html>

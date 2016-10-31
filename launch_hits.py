@@ -45,6 +45,7 @@ if __name__ == '__main__':
       except MTurkRequestError as e:
         print e
     hit_id = boto_hit[0].HITId
+    print hit_id
     hit_ids.append(hit_id)
 
   # TODO: Should the hit ids file be mandatory?
