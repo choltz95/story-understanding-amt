@@ -1,0 +1,157 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- amt depends on these libraries -->
+    <script src="https://npmcdn.com/react@15.3.1/dist/react.js"></script>
+    <script src="https://npmcdn.com/react-dom@15.3.1/dist/react-dom.js"></script>
+    <!--<script src="browser.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>
+    <!-- get text selection -->
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery.selection/1.0.1/jquery.selection.min.js'></script>
+    <!-- end of required libraries -->
+    <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js'></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- random color function -->
+    <script>!function(t,e){"object"==typeof exports?module.exports=e:"function"==typeof define&&define.amd?define(e):t.RColor=e()}(this,function(){var t=function(){this.hue=Math.random(),this.goldenRatio=.618033988749895,this.hexwidth=2};return t.prototype.hsvToRgb=function(t,e,o){var h=Math.floor(6*t),i=6*t-h,r=o*(1-e),n=o*(1-i*e),a=o*(1-(1-i)*e),s=255,f=255,u=255;switch(h){case 0:s=o,f=a,u=r;break;case 1:s=n,f=o,u=r;break;case 2:s=r,f=o,u=a;break;case 3:s=r,f=n,u=o;break;case 4:s=a,f=r,u=o;break;case 5:s=o,f=r,u=n}return[Math.floor(256*s),Math.floor(256*f),Math.floor(256*u)]},t.prototype.padHex=function(t){return t.length>this.hexwidth?t:Array(this.hexwidth-t.length+1).join("0")+t},t.prototype.get=function(t,e,o){this.hue+=this.goldenRatio,this.hue%=1,"number"!=typeof e&&(e=.5),"number"!=typeof o&&(o=.95);var h=this.hsvToRgb(this.hue,e,o);return t?"#"+this.padHex(h[0].toString(16))+this.padHex(h[1].toString(16))+this.padHex(h[2].toString(16)):h},t});</script>
+ 
+    <script type="text/babel" src='InstructionComponent.jsx'></script>
+    <script type="text/babel" src='FooterInstructionComponent.jsx'></script>
+    <script type="text/babel" src='SubHeaderInstructionComponent.jsx'></script>
+    <script type="text/babel" src='RuleManager.jsx'></script>
+    <script type="text/babel" src='app.jsx'></script>
+    <script src='main.js'></script>
+    <style>
+      * {
+        margin-bottom:4px;
+      }
+      .noselect {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none;   /* Chrome/Safari/Opera */
+        -khtml-user-select: none;    /* Konqueror */
+        -moz-user-select: none;      /* Firefox */
+        -ms-user-select: none;       /* Internet Explorer/Edge */
+        user-select: none;           /* Non-prefixed version */
+      }
+      .hover:hover{
+        background: #EEEEEE;
+      }
+      #text-area {
+        margin: 10px 0;
+        font-size: 10pt;
+        min-height: 65px;
+        cursor: text;
+        resize: none;
+      }
+      textarea {
+        resize: none;
+      }
+      #story {
+        margin: 10px 0;
+        font-size: 10pt;
+        min-height: 150px;
+        min-width: 800px;
+        cursor: text;
+      }
+      #story-ending,#story-ending2 {
+        cursor: text;
+      }
+      #button-div {
+        margin-bottom: 10px;
+      }
+      #instructions {
+        margin: 10px 0;
+        font-size: 9pt;
+        min-height: 55px;
+      }
+      #footer-instructions {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        border: 3px solid #73AD21;
+        background-color: white;
+      }
+      li {
+        text-align: left;
+        padding: 0;
+        margin: 0;
+      }
+      .margin-left {
+        margin-left: -15px;
+      }
+      .margin-right {
+        margin-right: -15px;
+      }
+      input.form-fixer {
+        padding: 1px;
+        font-size: 19px;
+      }
+      select.soflow {
+         -webkit-appearance: button;
+         -webkit-border-radius: 2px;
+         -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+         -webkit-padding-end: 20px;
+         -webkit-padding-start: 2px;
+         -webkit-user-select: none;
+         background-image: url(http://i62.tinypic.com/15xvbd5.png), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+         background-position: 97% center;
+         background-repeat: no-repeat;
+         border: 1px solid #AAA;
+         color: #555;
+         font-size: inherit;
+         overflow: hidden;
+         padding: 5px 5px;
+         text-overflow: ellipsis;
+         white-space: nowrap;
+         width: 105px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class='containier-fluid'>
+      <div class='row' style="margin-left:0px;">
+        <div class='col-md-10 col-md-offset-1' id='instruction-div'></div>
+      </div>
+      
+      <div class='row' style="margin-top:15px">
+        <div class='col-md-10 col-md-offset-1 text-center' style="margin-top:-12px;">
+          <div id='story-container' style='display: inline-block;'>
+            <b>Context</b>
+            <textarea id='story' class='form-control tb-margin noselect' readonly></textarea>
+            <div id='ending1'>
+            <b>Ending 1</b>
+            <textarea id='story-ending' class='form-control tb-margin noselect' readonly></textarea>
+            </div>
+            <div id='ending2'>
+            <b>Ending 2</b>
+            <textarea id='story-ending2' class='form-control tb-margin noselect' readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id='predicate-containers' class='col-md-12'></div>
+      <div class='col-md-8 col-md-offset-2 text-center'>
+        <b id='context-title' style="display: none"><h4>Context Grounding</h4></b>
+        <br>
+        <div id='grounding-container'></div>
+      </div>
+      <div class='row' style="margin-top:600px">
+        <div id='comment-container' class='col-md-8 col-md-offset-2 text-center'>
+       Do you have any comments about the task? We appreciate your input. You can also contact us via <a href="mailto:rocnlp@gmail.com?Subject=storyUnderstanding" target="_top">email</a> with any questions.
+      <textarea id='comment-area' class='form-control tb-margin'></textarea>
+      </div>
+      </div>
+      <div class='row' style="margin-top:0px">
+        <div id='submit-container' class='col-md-4 col-md-offset-4 text-center'>
+          {% include "amt.html" %}
+        </div>
+        <span class='col-md-4 col-md-offset-4' style="padding-left:70px">You must accept this HIT before you can submit it.</span>
+      </div>
+      <div id="footer-instructions" style="overflow: auto; text-align:left"><b>Recommended Steps</b></div>
+    </div>
+  </body>
+</html>
