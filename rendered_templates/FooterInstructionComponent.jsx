@@ -3,37 +3,37 @@ React component containing instructions
 */
 var FooterInstructionComponent = React.createClass({
   getInitialState: function() {
-    var inst = []
-    inst.push('READ the story and provided ending.')
-    inst.push('Given the above endings, choose an ending that fits the story best.')
-    return{ instructions: inst, step: 0, substep: 0, r:1, minimized:false } // step, substep, highlight step
+    var instructions = []
+    instructions.push('READ the story and provided ending.')
+    instructions.push('Given the above endings, choose an ending that fits the story best.')
+    return{ instructions: instructions, step: 0, substep: 0, r:1, minimized:false } // step, substep, highlight step
   },
   
   componentWillReceiveProps(nextProps) {
-    var inst = []
+    var instructions = []
     if(nextProps.step == 0) {
-      inst.push('READ the story and provided ending.');
-      inst.push('Given the above endings, choose an ending that fits the story best.');
+      instructions.push('READ the story and provided ending.');
+      instructions.push('Given the above endings, choose an ending that fits the story best.');
     } else if(nextProps.step == 1) {
         if(nextProps.substep == 1) {
-          inst.push('READ the story and provided ending.')
-          inst.push('SELECT a subject placeholder from the dropdown list.')
-          inst.push('SELECT an object placeholder from the dropdown list.')
-          inst.push('TYPE a predicate - how does the subject interact with the object?')
-          inst.push('ADD a new premise if necessary.')
-          inst.push('CONSTRUCT a consequence - the result of the sequence of premises constructed?')
-          inst.push('SAVE the rule by clicking the \'save rule\' button.')
-          inst.push('CONTINUE by clicking the \'next step\' button. \n OR add a new rule.')
+          instructions.push('READ the story and provided ending.')
+          instructions.push('SELECT a subject placeholder from the dropdown list.')
+          instructions.push('SELECT an object placeholder from the dropdown list.')
+          instructions.push('TYPE a predicate - how does the subject interact with the object?')
+          instructions.push('ADD a new premise if necessary.')
+          instructions.push('CONSTRUCT a consequence - the result of the sequence of premises constructed?')
+          instructions.push('SAVE the rule by clicking the \'save rule\' button.')
+          instructions.push('CONTINUE by clicking the \'next step\' button. \n OR add a new rule.')
         }
     } else if(nextProps.step == 2) {
       if(nextProps.substep == 1) {
-        inst.push('SELECT a premise or implication to ground to the context by clicking the associated \'ground to context\' button.')
-        inst.push('SELECT an element of the phrase to ground.')
-        inst.push('HIGHLIGHT a ground-word or ground-phrase in the context and SUBMIT the grounding.')
-        inst.push('REPEAT steps 1 through 4 for all necessary premises/implications.')
+        instructions.push('SELECT a premise or implication to ground to the context by clicking the associated \'ground to context\' button.')
+        instructions.push('SELECT an element of the phrase to ground.')
+        instructions.push('HIGHLIGHT a ground-word or ground-phrase in the context and SUBMIT the grounding.')
+        instructions.push('REPEAT steps 1 through 4 for all necessary premises/implications.')
       }
     }
-    this.setState({instructions:inst})
+    this.setState({instructions:instructions})
     // don't have to do this check first, but it can help prevent an unneeded render
     if (nextProps.step !== this.state.step) {
       this.setState({ step: nextProps.step });

@@ -134,6 +134,7 @@ var PremiseComponent = React.createClass({
              colors: []                     // set of colors for linked words
             }
   },
+  
   getAction: function() {
     if(this.state.customValue == true){
       var actionSubject = this.refs.actionSubject.value;
@@ -687,7 +688,7 @@ var PredicateManager = React.createClass({
     consequences[i] = consequence;
     this.setState({predicates: predicates});
     this.setState({consList: consequences});
-    globalState[this.props.index] = this.state.predicates;
+    //globalState[this.props.index] = this.state.predicates;
   },
 
   addPredicate: function() {
@@ -790,7 +791,7 @@ var PredicateManager = React.createClass({
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={1} />, document.getElementById('footer-instructions'));
   },
   
-  e1Click: function() {
+  e1Click: function() { // user clicks ending 1
     this.refs.e1.disabled = true;
     this.refs.e2.disabled = false;
     var e = document.getElementById("story-ending").value;
@@ -799,7 +800,8 @@ var PredicateManager = React.createClass({
     s[2] = "2";
     this.setState({story: s});
   },
-  e2Click: function() {
+  
+  e2Click: function() { // clicks ending 2
     this.refs.e2.disabled = true;
     this.refs.e1.disabled = false;
     var e = document.getElementById("story-ending2").value;
@@ -899,4 +901,42 @@ var PredicateManager = React.createClass({
     }
   }
 });
+
+/*
+Displays the logic-context linking state
+*/
+var ContextBoard = React.createClass({
+  render: function() {
+    var contextStyle = {textAlign: 'left'};
+    return(
+      <div className="contexts" style={contextStyle}>
+      {
+        this.props.predicates.map(function(predicate, i) { // ith predicate
+          return (
+            predicate[3].map(function(action,j) { //jth action
+              return(
+                action.map(function(mapping,k){ //kth word
+                  var colorStyle = {color: mapping[1]};
+                  if(mapping != "") {
+                    if(j==20){ // if consequence
+                      return(
+                        <div style={colorStyle}>  {"predicate: "+(i+1) + ", consequence: 0" + ", word: " + (k+1) +"("+predicate[2].split(" ")[k]+") -> "+mapping[0]} </div>
+                        );
+                    } else {
+                      return(
+                        <div style={colorStyle}>  {"predicate: "+(i+1) + ", premise: " +(j+1) + ", word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping[0]} </div>
+                      );
+                    }
+                  }
+                },this)
+              );
+            },this)
+          );
+        }, this)
+      }
+      </div>
+    );
+  }
+});
+
 window.PredicateManager = PredicateManager;

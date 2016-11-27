@@ -43,47 +43,10 @@ var StoryBoard = React.createClass({
 });
 
 /*
-Displays the logic-context linking state
-*/
-var ContextBoard = React.createClass({
-  render: function() {
-    var contextStyle = {textAlign: 'left'};
-    return(
-      <div className="contexts" style={contextStyle}>
-      {
-        this.props.predicates.map(function(predicate, i) { // ith predicate
-          return (
-            predicate[3].map(function(action,j) { //jth action
-              return(
-                action.map(function(mapping,k){ //kth word
-                  var colorStyle = {color: mapping[1]};
-                  if(mapping != "") {
-                    if(j==20){ // if consequence
-                      return(
-                        <div style={colorStyle}>  {"predicate: "+(i+1) + ", consequence: 0" + ", word: " + (k+1) +"("+predicate[2].split(" ")[k]+") -> "+mapping[0]} </div>
-                        );
-                    } else {
-                      return(
-                        <div style={colorStyle}>  {"predicate: "+(i+1) + ", premise: " +(j+1) + ", word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping[0]} </div>
-                      );
-                    }
-                  }
-                },this)
-              );
-            },this)
-          );
-        }, this)
-      }
-      </div>
-    );
-  }
-});
-
-/*
 Pass information from react frontend to amt.
 */
 window.app = ReactDOM.render(<StoryBoard />, document.getElementById('predicate-containers'));
-var globalState = [];
+window.globalState = [];
 $('#story-container').click(function(e) {
   var selected_text_story = $('#story').selection().trim();
   var selected_text_ending = $('#story-ending').selection().trim();

@@ -24,6 +24,7 @@ $sh start_server.sh
 ### Program process
 
 ## TODO
+ - Finish the readme
 
 ## References
 [0]Story Cloze Evaluation Test http://research.microsoft.com/en-us/um/people/pkohli/papers/cloze_test_naacl2016.pdf <br />
