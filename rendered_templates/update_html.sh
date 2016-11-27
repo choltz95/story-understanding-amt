@@ -5,5 +5,6 @@ cp ../hit_templates/InstructionComponent.jsx .
 cp ../hit_templates/app.jsx .
 cp ../hit_templates/SubHeaderInstructionComponent.jsx .
 cp ../hit_templates/index.html .
+cp ../hit_templates/rcolor.js .
 cd ..
 python render_template.py --html_template=index.html
