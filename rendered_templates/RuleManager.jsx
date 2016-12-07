@@ -903,7 +903,7 @@ var PredicateManager = React.createClass({
 });
 
 /*
-Displays the logic-context linking state
+Displays the story logic-context link state
 */
 var ContextBoard = React.createClass({
   render: function() {

@@ -3,10 +3,10 @@ React component containing instructions
 */
 var FooterInstructionComponent = React.createClass({
   getInitialState: function() {
-    var instructions = []
+    var instructions = [] // list of instructions
     instructions.push('READ the story and provided ending.')
     instructions.push('Given the above endings, choose an ending that fits the story best.')
-    return{ instructions: instructions, step: 0, substep: 0, r:1, minimized:false } // step, substep, highlight step
+    return{ instructions: instructions, step: 0, substep: 0, r:1, minimized:false } // step, substep, r is the current highlighted step
   },
   
   componentWillReceiveProps(nextProps) {
