@@ -27,9 +27,9 @@ var FooterInstructionComponent = React.createClass({
         }
     } else if(nextProps.step == 2) {
       if(nextProps.substep == 1) {
-        instructions.push('SELECT a premise or implication to ground to the context by clicking the associated \'ground to context\' button.')
+        instructions.push('SELECT a premise or implication to ground to the story by clicking the associated \'ground to story\' button.')
         instructions.push('SELECT an element of the phrase to ground.')
-        instructions.push('HIGHLIGHT a ground-word or ground-phrase in the context and SUBMIT the grounding.')
+        instructions.push('HIGHLIGHT a ground-word or ground-phrase in the story and SUBMIT the grounding.')
         instructions.push('REPEAT steps 1 through 4 for all necessary premises/implications.')
       }
     }

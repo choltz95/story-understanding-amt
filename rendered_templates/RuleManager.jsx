@@ -46,7 +46,7 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
     cols[this.state.i] = c;
     this.setState({colors: cols});
     if(this.props.selectedText == "") {
-      alert('You have not selected anything from the context to ground to. It is recommended that you reground this word.');
+      alert('You have not selected anything from the story to ground to. It is recommended that you reground this word.');
     }
     this.props.addLink(20, this.state.i, this.props.selectedText,c);
     $('#story').addClass('noselect');
@@ -78,7 +78,7 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
           <div style={linkStyle}>
             <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
             <span> ==></span>
-            <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
+            <textarea ref='ground' rows="1" maxLength="50" placeholder="Story" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
             <button onClick={this.saveLink} className='btn btn-xs link-btn btn-success' style={btnStyle}>submit</button>
           </div>
           <div className="actionText" style={divStyle}>
@@ -100,7 +100,7 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
       return(
         <div style = {wrapStyle}>
           <div style={linkStyle}>
-            <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Context</button>
+            <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Story</button>
           </div>
             <div ref='consequenceText' className='consequenceText' style={divStyle}>{
               this.props.cons.split(" ").map(function(word, i) {
@@ -198,7 +198,7 @@ var PremiseComponent = React.createClass({
     cols[this.state.i] = c;
     this.setState({colors: cols});
     if(this.props.selectedText == "") {
-      alert('You have not selected anything from the context to ground to. It is recommended that you reground this word.');
+      alert('You have not selected anything from the story to ground to. It is recommended that you reground this word.');
     }
     this.props.addLink(this.props.index, this.state.i, this.props.selectedText,c);
     $('#story').addClass('noselect');
@@ -280,6 +280,7 @@ var PremiseComponent = React.createClass({
                 <option value="someone">someone</option>
                 <option value="something">something</option>
                 <option value="somewhere">somewhere</option>
+                <option value="-">-</option>
               </select>
               
               <select className='soflow' ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
@@ -321,7 +322,7 @@ var PremiseComponent = React.createClass({
             <div style={linkStyle}>
               <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
               <span> ==></span>
-              <textarea ref='ground' rows="1" maxLength="50" placeholder="Context" value={this.props.selectedText} style={linkedElementStyle} onChange={this.contextChange} disabled></textarea>
+              <textarea ref='ground' rows="1" maxLength="50" placeholder="Story" value={this.props.selectedText} style={linkedElementStyle} onChange={this.contextChange} disabled></textarea>
               <button onClick={this.saveLink} className='btn btn-xs link-btn btn-success' style={btnStyle}>submit</button>
             </div>
             <div className="actionText" style={divStyle}>
@@ -347,7 +348,7 @@ var PremiseComponent = React.createClass({
         return(
           <div style = {wrapStyle}>
             <div style={linkStyle}>
-              <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Context</button>
+              <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Story</button>
             </div>
             <div style = {wrapStyle}>
               <div className="actionText" style={divStyle}>
@@ -471,7 +472,7 @@ var RuleComponent = React.createClass({
     if(this.props.step==2) {
       return (
         <div className='predicate'>
-        <div><b>{'Inference rule ' + (this.props.index+1) + ':'}</b></div>
+        <div><b>{'Logical rule ' + (this.props.index+1) + ':'}</b></div>
         <div className='premise-container' style={divStyle}>
         {
           this.props.act.map(function(action, i) {
@@ -514,7 +515,7 @@ var RuleComponent = React.createClass({
       if(this.props.edit == true) {
         return (
           <div className='predicate'>
-          <div><b>{'Inference rule ' + (this.props.index+1) + ':'}</b></div>
+          <div><b>{'Logical rule ' + (this.props.index+1) + ':'}</b></div>
           <div className='premise-container' style={divStyle}>
           {
             this.props.act.map(function(action, i) {
@@ -544,7 +545,7 @@ var RuleComponent = React.createClass({
       } else {
         return (
           <div className='predicate'>
-          <div><b>{'Inference rule ' + (this.props.index+1) + ':'}</b></div>
+          <div><b>{'Logical rule ' + (this.props.index+1) + ':'}</b></div>
           <div className='premise-container' style={divStyle}>
           {
             this.props.act.map(function(action, i) {
@@ -570,7 +571,6 @@ var RuleComponent = React.createClass({
           <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]}></ConsequenceComponent>
           <button onClick={this.edit} className='btn btn-xs edit-predicate-btn' style={divStyle}>Edit Rule</button>
           <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={divStyle}>Remove Rule</button>
-          <button ref='addBtn' onClick={this.add} className='btn btn-xs add-predicate-btn' style={btnStyle}>Add Rule</button>
           <hr></hr>
           </div>
           );
@@ -590,7 +590,7 @@ var RuleComponent = React.createClass({
 
     return (
       <div className='predicate'>
-        <div><b>{'Inference rule ' + (this.props.index+1) + ':'}</b></div>
+        <div><b>{'Logical rule ' + (this.props.index+1) + ':'}</b></div>
         <button onClick={this.addPremise} className='btn btn-xs add-variable-btn' style={btnStyle}>Add Premise</button>
         <span className='premise-container' style={inlineBlock}>
         {
@@ -814,6 +814,7 @@ var PredicateManager = React.createClass({
   render: function() {
     var nextBtnStyle = { display: 'inline-block', marginRight: 10 };
     var prevBtnStyle = { display: 'inline-block', marginRight: 10 };
+    var newRuleBtnStyle = {display: 'inline-block',marginLeft: 5};
     var predicateStyle = {};
     if(this.state.step==0) {
       ReactDOM.render(<FooterInstructionComponent step={0} substep={1} r={1} />, document.getElementById('footer-instructions'));
@@ -821,6 +822,7 @@ var PredicateManager = React.createClass({
     else if(this.state.step==1) {
       predicateStyle['display'] = 'inline-block';
       nextBtnStyle['display'] = 'inline-block';
+      newRuleBtnStyle['display'] = 'inline-block';
     } else if(this.state.step==2) {
       if(this.state.linkToggle == true) {
         this.refs.prevStep['disabled'] = true;
@@ -829,6 +831,9 @@ var PredicateManager = React.createClass({
       }
       predicateStyle['display'] = 'inline-block';
       nextBtnStyle['display'] = 'none';
+    }
+    if(this.state.step != 1) {
+      newRuleBtnStyle['display'] = 'none'
     }
     
     if(this.props.index == this.props.i_x) {
@@ -839,12 +844,15 @@ var PredicateManager = React.createClass({
         return(
           <div className="predicates">
             <div className="row">
+              <SubHeaderInstructionComponent step={this.state.step} />
+            </div>
+            <div className="row">
               <div className="col-md-4 col-md-offset-4 text-center">
-              <button ref={'e1'} onClick={this.e1Click} style={nextBtnStyle} className='btn step-fwd-btn btn-primary'>Ending 1</button><button ref={'e2'} onClick={this.e2Click} style={nextBtnStyle} className='btn step-fwd-btn btn-primary'>Ending 2</button>
+                <button ref={'e1'} onClick={this.e1Click} style={nextBtnStyle} className='btn step-fwd-btn btn-primary'>Ending 1</button>
+                <button ref={'e2'} onClick={this.e2Click} style={nextBtnStyle} className='btn step-fwd-btn btn-primary'>Ending 2</button>
               </div>
             </div>
             <div className="row">
-              <SubHeaderInstructionComponent step={this.state.step} />
               <div className="col-md-4 col-md-offset-4 text-center">
                 <button ref={'nextStep'} onClick={this.nextStep} style={nextBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Next Step</button>
               </div>
@@ -861,6 +869,9 @@ var PredicateManager = React.createClass({
                 <button ref={'prevStep'} onClick={this.prevStep} style={prevBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Previous Step</button>
                 <button ref={'nextStep'} onClick={this.nextStep} style={nextBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Next Step</button>
                 </div>
+            </div>
+            <div className="row">
+              <button ref='addBtn' onClick={this.addPredicate} className='btn btn-s add-predicate-btn' style={newRuleBtnStyle}>Add New Rule</button>
             </div>
             <div style={predicateStyle}>
             {
