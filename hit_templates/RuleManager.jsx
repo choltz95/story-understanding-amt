@@ -71,17 +71,13 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
   subjectChange: function(event){
     if(event.target.value == 'customOption') {
       this.setState({customSubject: true});
-    } //else {
-      //this.setState({act: event.target.value});
-    //}
+    }
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={5} />, document.getElementById('footer-instructions'));
   },
   objectChange: function(event){
     if(event.target.value == 'customOption') {
       this.setState({customObject: true});
-    } //else {
-      //this.setState({act: event.target.value});
-    //}
+    }
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={6} />, document.getElementById('footer-instructions'));
   },
   predicateChange: function() {
@@ -199,7 +195,7 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
             <div className="actionText" style={divStyle}>
             {
               this.state.linkList.map(function(word, i) {
-                if (stopWordList.includes(word)) {
+                if (stopWordList.includes(word)) { // if word is a stopword or has already grounded
                   return(" " + word + " ");
                 } else {
                   return (
@@ -343,17 +339,13 @@ var PremiseComponent = React.createClass({
   subjectChange: function(event){
     if(event.target.value == 'customOption') {
       this.setState({customSubject: true});
-    } //else {
-      //this.setState({act: event.target.value});
-    //}
+    }
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={2} />, document.getElementById('footer-instructions'));
   },
   objectChange: function(event){
     if(event.target.value == 'customOption') {
       this.setState({customObject: true});
-    } //else {
-      //this.setState({act: event.target.value});
-    //}
+    }
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={3} />, document.getElementById('footer-instructions'));
   },
   predicateChange: function() {
@@ -544,7 +536,7 @@ var PremiseComponent = React.createClass({
             <div className="actionText" style={divStyle}>
             {
               this.state.linkList.map(function(word, i) {
-                if (stopWordList.includes(word)) {
+                if (stopWordList.includes(word)) { // word is a stopword or has already been grounded
                   return(" " + word + " ");
                 } else {
                   return (
@@ -1177,7 +1169,7 @@ var ContextBoard = React.createClass({
                         );
                     } else {
                       return(
-                        <div style={colorStyle}>  {"In predicate "+(i+1) + ", the premise " +(j+1) + "on the left-hand-side, you mapped: word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping[0]} </div>
+                        <div style={colorStyle}>  {"In predicate "+(i+1) + ", the premise " +(j+1) + " on the left-hand-side, you mapped: word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping[0]} </div>
                       );
                     }
                   }
