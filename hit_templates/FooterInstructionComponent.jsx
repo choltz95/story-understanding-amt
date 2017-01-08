@@ -20,7 +20,7 @@ var FooterInstructionComponent = React.createClass({
           instructions.push('SELECT a subject placeholder from the dropdown list.')
           instructions.push('SELECT an object placeholder from the dropdown list.')
           instructions.push('TYPE a predicate - how does the subject interact with the object?')
-          instructions.push('ADD a new premise if necessary.')
+          instructions.push('ADD a new premise if necessary OR CONSTRUCT a consequence.')
           instructions.push('CONSTRUCT a consequence - the result of the sequence of premises constructed?')
           instructions.push('SAVE the rule by clicking the \'save rule\' button.')
           instructions.push('CONTINUE by clicking the \'next step\' button. \n OR add a new rule.')

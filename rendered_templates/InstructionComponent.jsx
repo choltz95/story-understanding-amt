@@ -34,14 +34,14 @@ var InstructionComponent = React.createClass({
     if(this.state.minimized == true) {
       return(
         <div style={instructionStyle}>
-            <h4 style = {headerStyle}><span style={{'fontWeight': 'bold'}}>Instructions and Examples</span></h4>
+            <h4 style = {headerStyle}><span style={{'fontWeight': 'bold'}}>Instructions</span></h4>
             <button onClick={this.minMaximize} className='btn btn-xs' style={btnStyle}>SHOW</button>
         </div>
       );
     }  else {
       return(
         <div style={instructionStyle}>
-          <h4 style = {headerStyle}><span style={{'fontWeight': 'bold'}}>Instructions and Examples</span>[Please read CAREFULLY]</h4>
+          <h4 style = {headerStyle}><span style={{'fontWeight': 'bold'}}>Instructions</span>[Please read CAREFULLY]</h4>
           <button onClick={this.minMaximize} className='btn btn-xs' style={btnStyle}>HIDE</button>
           <ul>
             <p style={paragraphStyle}>
@@ -68,8 +68,59 @@ var InstructionComponent = React.createClass({
 			</li>
 			
             <p style={paragraphStyle}>Properties of good rules and groundings are provided below.</p>
-            
-			
+          </ul>
+        </div>
+      );
+    }
+  }
+});
+
+/*
+React component containing examples
+*/
+var ExampleComponent = React.createClass({
+  getInitialState: function() {
+    return { minimized: false }
+  },
+  
+  minMaximize: function() {
+    var m = !this.state.minimized;
+    this.setState({minimized: m});
+  },
+  
+  render: function() {
+    /*
+    Instruction color styling
+    */
+    var bStyle = {color: 'blue'},
+        rStyle = {color: 'red'},
+        pStyle = {color: 'purple'},
+        gStyle = {color: 'green'},
+        oStyle = {color: 'orange'},
+        yStyle = {color: 'yellow'},
+        mStyle = {color: 'magenta'},
+        olStyle = {color: 'olive'}
+    
+    var instructionStyle = {border: "1px solid black", marginTop: 15};
+    var ulStyle = {textAlign: 'left'};
+    var headerStyle = {display: 'inline-block', textAlign: 'center', marginLeft: 15};
+    var btnStyle = {marginLeft: 5};
+    var paragraphStyle = {marginRight: 30, marginLeft: -5};
+    var divStyle = {paddingTop: 15};
+    
+   if(this.state.minimized == true) {
+      return(
+        <div style={instructionStyle}>
+            <h4 style = {headerStyle}><span style={{'fontWeight': 'bold'}}>Example</span></h4>
+            <button onClick={this.minMaximize} className='btn btn-xs' style={btnStyle}>SHOW</button>
+        </div>
+      );
+    }  else {
+      return(
+        <div style={instructionStyle}>
+          <h4 style = {headerStyle}><span style={{'fontWeight': 'bold'}}>Example</span>[Please read CAREFULLY]</h4>
+          <button onClick={this.minMaximize} className='btn btn-xs' style={btnStyle}>HIDE</button>
+          <ul>
             <h4><span style={{'fontWeight': 'bold'}}>Consider the following example:</span></h4>
             <p><b>Story Context:</b> "It was Karen's final performance in marching band. Karen was playing the snare drum in the band. She played Thriller and Radar Love. The performance was flawless."</p>
             <p><b>Ending 1:</b> "She was very proud of her performance."</p>
@@ -91,7 +142,7 @@ var InstructionComponent = React.createClass({
 			Now for each logical rule, <u>try to make it specific for this story by grounding generic terms to the story terms</u>. You should try to <u>map all the characters, items, and concepts to the original story as much as possible</u>.</li>
               <ul style = {ulStyle}>
                 <li><span style={mStyle}>someone -> Karen</span></li>
-				<li><span style={rStyle}>something -> Performance</span></li>
+				        <li><span style={rStyle}>something -> Performance</span></li>
               </ul>
           </ul>
         </div>
@@ -99,4 +150,6 @@ var InstructionComponent = React.createClass({
     }
   }
 });
+
+window.ExampleComponent = ExampleComponent;
 window.InstructionComponent = InstructionComponent;

@@ -39,14 +39,20 @@
       .hover:hover{
         background: #EEEEEE;
       }
+      
+      mark {
+          background-color: #F1C40F;
+          color: black;
+      }
+      
+      textarea {
+        resize: none;
+      }
       #text-area {
         margin: 10px 0;
         font-size: 10pt;
         min-height: 65px;
         cursor: text;
-        resize: none;
-      }
-      textarea {
         resize: none;
       }
       #story {
@@ -114,6 +120,7 @@
     <div class='containier-fluid'>
       <div class='row' style="margin-left:0px;">
         <div class='col-md-10 col-md-offset-1' id='instruction-div'></div>
+        <div class='col-md-10 col-md-offset-1' id='examples-div'></div>
       </div>
       
       <div class='row' style="margin-top:15px">
@@ -134,11 +141,11 @@
       </div>
 
       <div id='predicate-containers' class='col-md-12'></div>
-      <div class='col-md-8 col-md-offset-2 text-center'>
+      <!--<div class='col-md-8 col-md-offset-2 text-center'>
         <b id='context-title' style="display: none"><h4>Story Grounding</h4></b>
         <br>
         <div id='grounding-container'></div>
-      </div>
+      </div>-->
       <div class='row' style="margin-top:600px">
         <div id='comment-container' class='col-md-8 col-md-offset-2 text-center'>
        Do you have any comments about the task? We appreciate your input. You can also contact us via <a href="mailto:rocnlp@gmail.com?Subject=storyUnderstanding" target="_top">email</a> with any questions.

@@ -8,6 +8,9 @@ ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={1}/>, docume
 var InstructionComponent = window.InstructionComponent;
 ReactDOM.render(<InstructionComponent />, document.getElementById('instruction-div'));
 
+var ExampleComponent = window.ExampleComponent;
+ReactDOM.render(<ExampleComponent />, document.getElementById('examples-div'));
+
 var SubHeaderInstructionComponent = window.SubHeaderInstructionComponent;
 
 /*
@@ -127,6 +130,8 @@ var PremiseComponent = React.createClass({
     return { op: this.props.opdefaultValue, // default operator value for this premise
              act: this.props.adefaultValue, // default predicate value for this premise
              customValue: customVal,        // does the worker want to write his own premise?
+             customObject: false,
+             customSubject: false,
              customCustomValue: false,
              linking: false,                // are we linking this premise?
              linkList: [],                  // list of words
@@ -140,6 +145,7 @@ var PremiseComponent = React.createClass({
       var actionSubject = this.refs.actionSubject.value;
       var actionPredicate = this.refs.actionPredicate.value;
       var actionObject = this.refs.actionObject.value;
+      console.log(actionSubject)
       return(actionSubject + " " + actionPredicate + " " + actionObject);
     } else {
       return(this.state.act);
@@ -221,10 +227,20 @@ var PremiseComponent = React.createClass({
     }
   },
   */
-  subjectChange: function() {
+  subjectChange: function(event){
+    if(event.target.value == 'customOption') {
+      this.setState({customSubject: true});
+    } //else {
+      //this.setState({act: event.target.value});
+    //}
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={2} />, document.getElementById('footer-instructions'));
   },
-  objectChange: function() {
+  objectChange: function(event){
+    if(event.target.value == 'customOption') {
+      this.setState({customObject: true});
+    } //else {
+      //this.setState({act: event.target.value});
+    //}
     ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={3} />, document.getElementById('footer-instructions'));
   },
   predicateChange: function() {
@@ -253,44 +269,131 @@ var PremiseComponent = React.createClass({
       groundBtnStyle['display'] = '';
     }
     
-    var actionSubjectDefault = this.props.adefaultValue.split(" ")[0];
+    if(this.props.adefaultValue.split(" ")[0] != "") {
+      var actionSubjectDefault = this.props.adefaultValue.split(" ")[0];
+    } else {
+      var actionSubjectDefault = "subject"
+    }
     var actionPredicateDefault = this.props.adefaultValue.split(" ").slice(1, -1).join(" ");
-    var actionObjectDefault = this.props.adefaultValue.split(" ").slice(-1)[0];
+    if(this.props.adefaultValue.split(" ").slice(-1)[0] != "") {
+      var actionObjectDefault = this.props.adefaultValue.split(" ").slice(-1)[0];
+    } else {
+      var actionObjectDefault = "object"
+    }
 
     if(this.props.edit == true) {
       if (this.state.customValue == true || this.props.predicateIndex == 0) { // no options to chose from
-      return(
-          <div style={wrapStyle}>
-            <div style={linkStyle}>
-              <button onClick={this.removePremise} style={removePremiseStyle} className='btn btn-xs save-predicate-btn'>Remove Premise</button>
+        if(this.state.customSubject == true && this.state.customObject == false) {
+          return(
+            <div style={wrapStyle}>
+              <div style={linkStyle}>
+                <button onClick={this.removePremise} style={removePremiseStyle} className='btn btn-xs save-predicate-btn'>Remove Premise</button>
+              </div>
+              
+              <span style = {wrapStyle}>
+                <textarea ref='actionSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={actionSubjectDefault} onChange={this.subjectChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <textarea ref='actionPredicate' rows="1" maxLength="50" cols="10" placeholder="action" defaultValue={actionPredicateDefault} onChange={this.predicateChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <select className='soflow' ref='actionObject' defaultValue={actionObjectDefault} onChange={this.objectChange} style={objectStyle}>
+                  <option value="" disabled>object</option>
+                  <option value="someone">someone</option>
+                  <option value="something">something</option>
+                  <option value="somewhere">somewhere</option>
+                  <option value="-">-</option>
+                  <option value="customOption">[custom object]</option>
+                </select>
+                
+                <select className='soflow' ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
+                  <option value="and">and</option>
+                  <option value="or">or</option>
+                </select>
+              </span>
             </div>
-            
-            <span style = {wrapStyle}>
-              <select className='soflow' ref='actionSubject' defaultValue={actionSubjectDefault} onChange={this.subjectChange} style={btnStyle}>
-                <option value="" disabled>subject</option>
-                <option value="someone">someone</option>
-                <option value="something">something</option>
-                <option value="somewhere">somewhere</option>
-              </select>
-              
-              <textarea ref='actionPredicate' rows="1" maxLength="50" cols="10" placeholder="action" defaultValue={actionPredicateDefault} onChange={this.predicateChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
-              
-              <select className='soflow' ref='actionObject' defaultValue={actionObjectDefault} onChange={this.objectChange} style={objectStyle}>
-                <option value="" disabled>object</option>
-                <option value="someone">someone</option>
-                <option value="something">something</option>
-                <option value="somewhere">somewhere</option>
-                <option value="-">-</option>
-              </select>
-              
-              <select className='soflow' ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
-                <option value="and">and</option>
-                <option value="or">or</option>
-              </select>
-            </span>
-          </div>
           );
-      } else { // not custom value
+        } else if(this.state.customSubject == false && this.state.customObject == true) {
+          return(
+            <div style={wrapStyle}>
+              <div style={linkStyle}>
+                <button onClick={this.removePremise} style={removePremiseStyle} className='btn btn-xs save-predicate-btn'>Remove Premise</button>
+              </div>
+              
+              <span style = {wrapStyle}>
+                <select className='soflow' ref='actionSubject' defaultValue={actionSubjectDefault} onChange={this.subjectChange} style={btnStyle}>
+                  <option value="" disabled>subject</option>
+                  <option value="someone">someone</option>
+                  <option value="something">something</option>
+                  <option value="somewhere">somewhere</option>
+                  <option value="customOption">[custom subject]</option>
+                </select>
+                
+                <textarea ref='actionPredicate' rows="1" maxLength="50" cols="10" placeholder="action" defaultValue={actionPredicateDefault} onChange={this.predicateChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <textarea ref='actionObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={actionObjectDefault} onChange={this.objectChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <select className='soflow' ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
+                  <option value="and">and</option>
+                  <option value="or">or</option>
+                </select>
+              </span>
+            </div>
+          );
+        } else if(this.state.customSubject == true && this.state.customObject == true) {
+          return(
+            <div style={wrapStyle}>
+              <div style={linkStyle}>
+                <button onClick={this.removePremise} style={removePremiseStyle} className='btn btn-xs save-predicate-btn'>Remove Premise</button>
+              </div>
+              <span style = {wrapStyle}>
+                <textarea ref='actionSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={actionSubjectDefault} onChange={this.subjectChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <textarea ref='actionPredicate' rows="1" maxLength="50" cols="10" placeholder="action" defaultValue={actionPredicateDefault} onChange={this.predicateChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <textarea ref='actionObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={actionObjectDefault} onChange={this.objectChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <select className='soflow' ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
+                  <option value="and">and</option>
+                  <option value="or">or</option>
+                </select>
+              </span>
+            </div>
+          );
+        } else {
+          return(
+            <div style={wrapStyle}>
+              <div style={linkStyle}>
+                <button onClick={this.removePremise} style={removePremiseStyle} className='btn btn-xs save-predicate-btn'>Remove Premise</button>
+              </div>
+              
+              <span style = {wrapStyle}>
+                <select className='soflow' ref='actionSubject' defaultValue={actionSubjectDefault} onChange={this.subjectChange} style={btnStyle}>
+                  <option value={actionSubjectDefault} disabled>{actionSubjectDefault}</option>
+                  <option value="someone">someone</option>
+                  <option value="something">something</option>
+                  <option value="somewhere">somewhere</option>
+                  <option value="customOption">[custom subject]</option>
+                </select>
+                
+                <textarea ref='actionPredicate' rows="1" maxLength="50" cols="10" placeholder="action" defaultValue={actionPredicateDefault} onChange={this.predicateChange} style={divStyle} onBlur={this.onBlurHandler}></textarea>
+                
+                <select className='soflow' ref='actionObject' defaultValue={actionObjectDefault} onChange={this.objectChange} style={objectStyle}>
+                  <option value={actionObjectDefault} disabled>{actionObjectDefault}</option>
+                  <option value="someone">someone</option>
+                  <option value="something">something</option>
+                  <option value="somewhere">somewhere</option>
+                  <option value="-">-</option>
+                  <option value="customOption">[custom object]</option>
+                </select>
+                
+                <select className='soflow' ref='op' style={selectStyle} defaultValue={this.props.opdefaultValue} onChange={this.opChangeHandler}>
+                  <option value="and">and</option>
+                  <option value="or">or</option>
+                </select>
+              </span>
+            </div>
+          );
+        }
+      } else { // new premise
         return (
           <div style={wrapStyle}>
           <div style={linkStyle}>
@@ -343,26 +446,25 @@ var PremiseComponent = React.createClass({
             </div>
           </div>
           );
-      }
-      else {
-        return(
-          <div style = {wrapStyle}>
-            <div style={linkStyle}>
-              <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Story</button>
-            </div>
+      } else {
+          return(
             <div style = {wrapStyle}>
-              <div className="actionText" style={divStyle}>
-              {
-                this.props.adefaultValue.split(" ").map(function(word, i) {
-                  var colStyle = {color: this.state.colors[i]}
-                  return(<span key={i} style={colStyle}>{word} </span>);
-                },this)
-              }
+              <div style={linkStyle}>
+                <button ref="linkBtn" onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Story</button>
               </div>
-              <b style={selectStyle}>{this.props.opdefaultValue}</b>
+              <div style = {wrapStyle}>
+                <div className="actionText" style={divStyle}>
+                {
+                  this.props.adefaultValue.split(" ").map(function(word, i) {
+                    var colStyle = {color: this.state.colors[i]}
+                    return(<span key={i} style={colStyle}>{word} </span>);
+                  },this)
+                }
+                </div>
+                <b style={selectStyle}>{this.props.opdefaultValue}</b>
+              </div>
             </div>
-          </div>
-        );
+          );
       }
     }
   }
@@ -383,7 +485,7 @@ var RuleComponent = React.createClass({
   },
 
   remove: function() {
-    if (this.props.numPreds > 1) {
+    if (this.props.numPreds > 0) {
       console.log('removing predicate');
       this.props.removePredicate(this.props.index);
     } else {
@@ -405,7 +507,7 @@ var RuleComponent = React.createClass({
     var consequencePredicate = this.refs.consequencePredicate.value.trim();
     var consequenceSubject = this.refs.consequenceSubject.value.trim();
     var consequenceObject = this.refs.consequenceObject.value.trim();
-    console.log(defaultObjects.indexOf(consequenceObject))
+
     if(this.props.index > 0 && consequencePredicate=="" && consequenceSubject=="" && consequenceObject=="" && actions.join().trim() == "") { // discard empty inference rules
       this.props.toggleEdit();
       this.setState({editing: false});
@@ -414,8 +516,7 @@ var RuleComponent = React.createClass({
     }
     for (var i=0;i<actions.length;i++) {
       var aContent = actions[i].split(" ");
-      var aLen = aContent.length-1;
-      if(aContent.length < 3 || defaultObjects.indexOf(aContent[0]) == -1 || defaultObjects.indexOf(consequenceSubject) == -1 || defaultObjects.indexOf(aContent[aLen]) == -1 || defaultObjects.indexOf(consequenceObject) == -1 || consequencePredicate == "") { // partially complete form
+      if(aContent.length < 3 || consequenceSubject == "" || consequenceObject == "" || consequencePredicate == "") { // partially complete form
         alert("Can't leave empty fields in premise");
         return false;
       }
@@ -632,6 +733,7 @@ var RuleComponent = React.createClass({
           <option value="someone">someone</option>
           <option value="something">something</option>
           <option value="somewhere">somewhere</option>
+          <option value="-">-</option>
         </select>
         </span>
         <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>Save Rule</button>
@@ -839,7 +941,9 @@ var PredicateManager = React.createClass({
     if(this.props.index == this.props.i_x) {
       if(this.state.step==0) {
         if(this.state.story[2] != "") {
-          document.getElementById("ending" + this.state.story[2]).style.display="block";
+          //document.getElementById("ending" + this.state.story[2]).style.display="block";
+          document.getElementById("ending1").style.display="block";
+          document.getElementById("ending2").style.display="block";
         }
         return(
           <div className="predicates">
@@ -860,15 +964,14 @@ var PredicateManager = React.createClass({
           </div>
         );
       } else {
-        document.getElementById("ending" + this.state.story[2]).style.display="none";
+        //document.getElementById("ending" + this.state.story[2]).style.display="none";
+        document.getElementById("ending1").style.display="none";
+        document.getElementById("ending2").style.display="none";
+        document.getElementById("story").value = this.state.story[0] + " " + this.state.story[1];
         return(
           <div className="predicates">
             <div className="row">
               <SubHeaderInstructionComponent step={this.state.step} />
-                <div className="col-md-4 col-md-offset-4 text-center">
-                <button ref={'prevStep'} onClick={this.prevStep} style={prevBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Previous Step</button>
-                <button ref={'nextStep'} onClick={this.nextStep} style={nextBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Next Step</button>
-                </div>
             </div>
             <div className="row">
               <button ref='addBtn' onClick={this.addPredicate} className='btn btn-s add-predicate-btn' style={newRuleBtnStyle}>Add New Rule</button>
@@ -904,6 +1007,20 @@ var PredicateManager = React.createClass({
               }, this)
             }
             </div>
+            <div className="row">
+              <div className='col-md-8 col-md-offset-2 text-center'>
+                <b id='context-title' style={{display: "none"}}><h4>Story Grounding</h4></b>
+                <br></br>
+                <div id='grounding-container'></div>
+              </div>
+              <hr></hr>
+            </div>
+            <div className="row">
+              <div className="col-md-4 col-md-offset-4 text-center">
+                <button ref={'prevStep'} onClick={this.prevStep} style={prevBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Previous Step</button>
+                <button ref={'nextStep'} onClick={this.nextStep} style={nextBtnStyle} disabled={!this.state.stepBtn} className='btn step-fwd-btn btn-primary'>Next Step</button>
+              </div>
+            </div>
           </div>
           );
         }
@@ -931,11 +1048,11 @@ var ContextBoard = React.createClass({
                   if(mapping != "") {
                     if(j==20){ // if consequence
                       return(
-                        <div style={colorStyle}>  {"predicate: "+(i+1) + ", consequence: 0" + ", word: " + (k+1) +"("+predicate[2].split(" ")[k]+") -> "+mapping[0]} </div>
+                        <div style={colorStyle}>  {"In predicate "+(i+1) + ", the consequence on the right-hand-side" + ", you mapped: word " + (k+1) +"("+predicate[2].split(" ")[k]+") -> "+mapping[0]} </div>
                         );
                     } else {
                       return(
-                        <div style={colorStyle}>  {"predicate: "+(i+1) + ", premise: " +(j+1) + ", word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping[0]} </div>
+                        <div style={colorStyle}>  {"In predicate "+(i+1) + ", the premise " +(j+1) + "on the left-hand-side, you mapped: word: " + (k+1) +"("+predicate[0][j].split(" ")[k]+"): -> "+mapping[0]} </div>
                       );
                     }
                   }

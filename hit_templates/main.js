@@ -2,7 +2,7 @@ var input_size = 0;
 var idx = 0;
 $(function() {
     // Default input to be used during testing + development.
-    var DEFAULT_INPUT = ['Karen was assigned a roommate her first year of college. Her roommate asked her to go to a nearby city for a concert. Karen agreed happily. The show was absolutely exhilarating', 'Karen became good friends with her roommate.','Karen hated her roommate.'];
+    var DEFAULT_INPUT = ['Karen was assigned a roommate her first year of college. Her roommate asked her to go to a nearby city for a concert. Karen agreed happily. The show was absolutely exhilarating.', 'Karen became good friends with her roommate.','Karen hated her roommate.'];
 
     var input = null;
     var descriptions = [];
