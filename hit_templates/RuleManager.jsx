@@ -21,7 +21,9 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
     return { linking: false, // are we currently linking?
              linkList: [],   // words
              i:-1,           // temporary index of linked word
-             colors:{}       // array of color links
+             colors:{},      // array of color links
+             customSubject:false,
+             customObject:false
             }
   },
 
@@ -58,6 +60,34 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
     this.props.toggleLink();
   },
   
+  getData: function() {
+    var d = [];
+    d[0] = this.refs.consequencePredicate.value.trim();
+    d[1] = this.refs.consequenceSubject.value.trim();
+    d[2] = this.refs.consequenceObject.value.trim();
+    return d;
+  },
+  
+  subjectChange: function(event){
+    if(event.target.value == 'customOption') {
+      this.setState({customSubject: true});
+    } //else {
+      //this.setState({act: event.target.value});
+    //}
+    ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={5} />, document.getElementById('footer-instructions'));
+  },
+  objectChange: function(event){
+    if(event.target.value == 'customOption') {
+      this.setState({customObject: true});
+    } //else {
+      //this.setState({act: event.target.value});
+    //}
+    ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={6} />, document.getElementById('footer-instructions'));
+  },
+  predicateChange: function() {
+    ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={7} />, document.getElementById('footer-instructions'));
+  },
+  
   render: function() {
     var btnStyle = { marginLeft: 5, marginRight: 0 };
     var groundBtnStyle = { marginLeft: 5, marginRight: 0 };
@@ -65,6 +95,7 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
     var linkedElementStyle = { display: 'inline-block', width: 50, overflow:'hidden', marginBottom:-8, marginLeft:5 };
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
     var linkStyle = {marginTop: 40, textAlign: 'center' };
+    var inlineBlock = { marginLeft:10 };
     var s = this.props.step;
     
     // Display grounding button depending if there exists an action we are currently linking
@@ -74,46 +105,128 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
       groundBtnStyle['display'] = '';
     }
     
-    // if the step is 2, display the grounding buttons and remove the rule manipulation buttons
-    if(this.state.linking == true && this.props.step == 2){
-      return (
-        <div style = {wrapStyle}>
-          <div style={linkStyle}>
-            <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
-            <span> ==></span>
-            <textarea ref='ground' rows="1" maxLength="50" placeholder="Story" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
-            <button onClick={this.saveLink} className='btn btn-xs link-btn btn-success' style={btnStyle}>submit</button>
-          </div>
-          <div className="actionText" style={divStyle}>
-          {
-            this.state.linkList.map(function(word, i) {
-              if (stopWordList.includes(word)) {
-                return(" " + word + " ");
-              } else {
-                return (
-                  <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
-                );
-              }
-            },this)
-          }
-          </div>
-        </div>
-        );
+    if(this.props.consequenceSubjectDefault != "") {
+      var consequenceSubjectDefault = this.props.consequenceSubjectDefault;
+      console.log(consequenceSubjectDefault);
     } else {
-      return(
-        <div style = {wrapStyle}>
-          <div style={linkStyle}>
-            <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Story</button>
-          </div>
-            <div ref='consequenceText' className='consequenceText' style={divStyle}>{
-              this.props.cons.split(" ").map(function(word, i) {
-                var colStyle = {color: this.state.colors[i]}
-                return(<span key={i} style={colStyle}>{word} </span>);
+      var consequenceSubjectDefault = "subject"
+    }
+    if(this.props.consequenceObjectDefault != "") {
+      var consequenceObjectDefault = this.props.consequenceObjectDefault;
+    } else {
+      var consequenceObjectDefault = "object"
+    }
+    
+    if(this.props.edit == true) {
+      if(this.state.customSubject == true && this.state.customObject == false) {
+        return(
+          <span className='consequence-container' style={inlineBlock}>
+          <textarea ref='consequenceSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={this.props.consequenceSubjectDefault} style={divStyle}></textarea>
+          
+          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="10" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+          
+          <select className='soflow' ref='consequenceObject' defaultValue={consequenceObjectDefault} onChange={this.objectChange}>
+            <option value={consequenceObjectDefault} disabled>{consequenceObjectDefault}</option>
+            <option value="someone">someone</option>
+            <option value="something">something</option>
+            <option value="somewhere">somewhere</option>
+            <option value="-">-</option>
+            <option value="customOption">[custom object]</option>
+          </select>
+          </span>
+        );
+      } else if (this.state.customSubject == false && this.state.customObject == true) {
+        return(
+          <span className='consequence-container' style={inlineBlock}>
+          <select className='soflow' ref='consequenceSubject' defaultValue={consequenceSubjectDefault} onChange={this.subjectChange}>
+            <option value={consequenceSubjectDefault} disabled>{consequenceSubjectDefault}</option>
+            <option value="someone">someone</option>
+            <option value="something">something</option>
+            <option value="somewhere">somewhere</option>
+            <option value="customOption">[custom object]</option>
+          </select>
+          
+          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="10" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+          
+          <textarea ref='consequenceObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={this.props.consequenceObjectDefault} style={divStyle}></textarea>
+          </span>
+        );
+      } else if (this.state.customSubject == true && this.state.customObject == true) {
+        return(
+          <span className='consequence-container' style={inlineBlock}>
+          <textarea ref='consequenceSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+          
+          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="10" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+          
+          <textarea ref='consequenceObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={this.props.consequenceObjectDefault} style={divStyle}></textarea>
+          </span>
+        );
+      } else {
+        return(
+          <span className='consequence-container' style={inlineBlock}>
+          <select className='soflow' ref='consequenceSubject' defaultValue={consequenceSubjectDefault} onChange={this.subjectChange}>
+            <option value={consequenceSubjectDefault} disabled>{consequenceSubjectDefault}</option>
+            <option value="someone">someone</option>
+            <option value="something">something</option>
+            <option value="somewhere">somewhere</option>
+            <option value="customOption">[custom object]</option>
+          </select>
+          
+          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="10" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+          
+          <select className='soflow' ref='consequenceObject' defaultValue={consequenceObjectDefault} onChange={this.objectChange}>
+            <option value={consequenceObjectDefault} disabled>{consequenceObjectDefault}</option>
+            <option value="someone">someone</option>
+            <option value="something">something</option>
+            <option value="somewhere">somewhere</option>
+            <option value="-">-</option>
+            <option value="customOption">[custom object]</option>
+          </select>
+          </span>
+        );
+      }
+    } else {
+      // if the step is 2, display the grounding buttons and remove the rule manipulation buttons
+      if(this.state.linking == true && this.props.step == 2){
+        return (
+          <div style = {wrapStyle}>
+            <div style={linkStyle}>
+              <textarea ref='linked_element' rows="1" maxLength="50" placeholder="Linked Element" style={linkedElementStyle} disabled></textarea>
+              <span> ==></span>
+              <textarea ref='ground' rows="1" maxLength="50" placeholder="Story" value={this.props.selectedText} style={linkedElementStyle} disabled></textarea>
+              <button onClick={this.saveLink} className='btn btn-xs link-btn btn-success' style={btnStyle}>submit</button>
+            </div>
+            <div className="actionText" style={divStyle}>
+            {
+              this.state.linkList.map(function(word, i) {
+                if (stopWordList.includes(word)) {
+                  return(" " + word + " ");
+                } else {
+                  return (
+                    <button key={i} onClick={() => {this.link(i)}} className='btn btn-xs link-btn' style={btnStyle}>{word}</button>
+                  );
+                }
               },this)
             }
             </div>
-        </div>
-      );
+          </div>
+          );
+      } else {
+        return(
+          <div style = {wrapStyle}>
+            <div style={linkStyle}>
+              <button onClick={this.setLink} className='btn btn-xs link-btn' style={groundBtnStyle}>Ground to Story</button>
+            </div>
+              <div ref='consequenceText' className='consequenceText' style={divStyle}>{
+                this.props.cons.split(" ").map(function(word, i) {
+                  var colStyle = {color: this.state.colors[i]}
+                  return(<span key={i} style={colStyle}>{word} </span>);
+                },this)
+              }
+              </div>
+          </div>
+        );
+      }
     }
   }
 });
@@ -496,6 +609,7 @@ var RuleComponent = React.createClass({
 
   save: function() {
     console.log("saving predicate");
+    ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={9} />, document.getElementById('footer-instructions'));
     var actions = [];
     var ops = [];
     for(var ref in this.refs) {
@@ -504,9 +618,11 @@ var RuleComponent = React.createClass({
         ops.push(this.refs[ref].getOp());
       }
     }
-    var consequencePredicate = this.refs.consequencePredicate.value.trim();
-    var consequenceSubject = this.refs.consequenceSubject.value.trim();
-    var consequenceObject = this.refs.consequenceObject.value.trim();
+    
+    var d = this.refs.consequence.getData();
+    var consequencePredicate = d[0] //this.refs.consequencePredicate.value.trim();
+    var consequenceSubject = d[1] //this.refs.consequenceSubject.value.trim();
+    var consequenceObject = d[2] //this.refs.consequenceObject.value.trim();
 
     if(this.props.index > 0 && consequencePredicate=="" && consequenceSubject=="" && consequenceObject=="" && actions.join().trim() == "") { // discard empty inference rules
       this.props.toggleEdit();
@@ -523,7 +639,6 @@ var RuleComponent = React.createClass({
     }
     this.props.toggleEdit();
     this.props.updatePredicate(actions, ops, consequenceSubject + " " + consequencePredicate + " " + consequenceObject, this.props.index);
-    ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={7} />, document.getElementById('footer-instructions'));
     this.setState({editing: false});
   },
 
@@ -579,20 +694,20 @@ var RuleComponent = React.createClass({
           this.props.act.map(function(action, i) {
             return (
               <PremiseComponent
-              key={i}
-              index={i}
-              numActions={this.props.act.length}
-              adefaultValue={action}
-              opdefaultValue={this.props.op[i]}
-              edit={this.state.editing}
-              ref={'action'+i}
-              addLink={this.addLink}
-              contextLinks={this.props.contextLinks[i]}
-              selectedText={this.props.selectedText}
-              step={this.props.step}
-              toggleLink={this.setLink}
-              alreadyLinking={this.state.linking}
-              linkToggle = {this.props.linkToggle}>
+                key={i}
+                index={i}
+                numActions={this.props.act.length}
+                adefaultValue={action}
+                opdefaultValue={this.props.op[i]}
+                edit={this.state.editing}
+                ref={'action'+i}
+                addLink={this.addLink}
+                contextLinks={this.props.contextLinks[i]}
+                selectedText={this.props.selectedText}
+                step={this.props.step}
+                toggleLink={this.setLink}
+                alreadyLinking={this.state.linking}
+                linkToggle = {this.props.linkToggle}>
               </PremiseComponent>
               );
           }, this)
@@ -600,6 +715,7 @@ var RuleComponent = React.createClass({
         </div>
         <b>implies</b>
         <ConsequenceComponent
+          ref="consequence"
           cons={this.props.cons}
           step={this.props.step}
           addLink={this.addLink}
@@ -622,24 +738,31 @@ var RuleComponent = React.createClass({
             this.props.act.map(function(action, i) {
               return (
                 <PremiseComponent
-                key={i}
-                index={i}
-                numActions={this.props.act.length}
-                adefaultValue={action}
-                opdefaultValue={this.props.op[i]}
-                edit={this.state.editing}
-                ref={'action'+i}
-                addLink={this.addLink}
-                contextLinks={this.props.contextLinks[i]}
-                selectedText={this.props.selectedText}
-                step={this.props.step}>
+                  key={i}
+                  index={i}
+                  numActions={this.props.act.length}
+                  adefaultValue={action}
+                  opdefaultValue={this.props.op[i]}
+                  edit={this.state.editing}
+                  ref={'action'+i}
+                  addLink={this.addLink}
+                  contextLinks={this.props.contextLinks[i]}
+                  selectedText={this.props.selectedText}
+                  step={this.props.step}>
                 </PremiseComponent>
                 );
             }, this)
           }
           </div>
           <b>implies</b>
-          <ConsequenceComponent cons={this.props.cons} step={this.props.step} addLink={this.addLink} selectedText={this.props.selectedText} contextLinks={this.props.contextLinks[20]}></ConsequenceComponent>
+          <ConsequenceComponent
+            ref="consequence"
+            cons={this.props.cons}
+            step={this.props.step}
+            addLink={this.addLink}
+            selectedText={this.props.selectedText}
+            contextLinks={this.props.contextLinks[20]}>
+          </ConsequenceComponent>
           <hr></hr>
           </div>
           );
@@ -652,17 +775,17 @@ var RuleComponent = React.createClass({
             this.props.act.map(function(action, i) {
               return (
                 <PremiseComponent
-                key={i}
-                index={i}
-                numActions={this.props.act.length}
-                adefaultValue={action}
-                opdefaultValue={this.props.op[i]}
-                edit={this.state.editing}
-                ref={'action'+i}
-                addLink={this.addLink}
-                contextLinks={this.props.contextLinks[i]}
-                selectedText={this.props.selectedText}
-                step={this.props.step}>
+                  key={i}
+                  index={i}
+                  numActions={this.props.act.length}
+                  adefaultValue={action}
+                  opdefaultValue={this.props.op[i]}
+                  edit={this.state.editing}
+                  ref={'action'+i}
+                  addLink={this.addLink}
+                  contextLinks={this.props.contextLinks[i]}
+                  selectedText={this.props.selectedText}
+                  step={this.props.step}>
                 </PremiseComponent>
                 );
             }, this)
@@ -670,6 +793,7 @@ var RuleComponent = React.createClass({
           </div>
           <b>implies</b>
           <ConsequenceComponent
+            ref="consequence"
             cons={this.props.cons}
             step={this.props.step}
             edit={this.state.editing}
@@ -705,44 +829,38 @@ var RuleComponent = React.createClass({
           this.props.act.map(function(action, i) {
             return (
               <PremiseComponent
-              key={i}
-              index={i}
-              predicateIndex={this.props.index}
-              consList={this.props.consList}
-              numActions={this.props.act.length}
-              adefaultValue={action}
-              opdefaultValue={this.props.op[i]}
-              edit={this.state.editing}
-              ref={'action'+i}
-              addLink={this.addLink}
-              contextLinks={this.props.contextLinks[i]}
-              selectedText={this.props.selectedText}
-              step={this.props.step}
-              removePremise={this.removePremise}>
+                key={i}
+                index={i}
+                predicateIndex={this.props.index}
+                consList={this.props.consList}
+                numActions={this.props.act.length}
+                adefaultValue={action}
+                opdefaultValue={this.props.op[i]}
+                edit={this.state.editing}
+                ref={'action'+i}
+                addLink={this.addLink}
+                contextLinks={this.props.contextLinks[i]}
+                selectedText={this.props.selectedText}
+                step={this.props.step}
+                removePremise={this.removePremise}>
               </PremiseComponent>
               );
           }, this)
         }
         </span>
         <span><b>implies&nbsp;&nbsp;</b></span>
-        <span className='consequence-container' style={inlineBlock}>
-        <select className='soflow' ref='consequenceSubject' defaultValue={consequenceSubjectDefault} onChange={this.subjectChange}>
-          <option value="" disabled>subject</option>
-          <option value="someone">someone</option>
-          <option value="something">something</option>
-          <option value="somewhere">somewhere</option>
-        </select>
-        
-        <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="10" placeholder="consequence" defaultValue={consequencePredicateDefault} style={divStyle}></textarea>
-        
-        <select className='soflow' ref='consequenceObject' defaultValue={consequenceObjectDefault} onChange={this.objectChange}>
-          <option value="" disabled>object</option>
-          <option value="someone">someone</option>
-          <option value="something">something</option>
-          <option value="somewhere">somewhere</option>
-          <option value="-">-</option>
-        </select>
-        </span>
+        <ConsequenceComponent
+          ref="consequence"
+          cons={this.props.cons}
+          step={this.props.step}
+          edit={this.state.editing}
+          addLink={this.addLink}
+          selectedText={this.props.selectedText}
+          consequenceSubjectDefault = {consequenceSubjectDefault}
+          consequencePredicateDefault = {consequencePredicateDefault}
+          consequenceObjectDefault = {consequenceObjectDefault}
+          contextLinks={this.props.contextLinks[20]}>
+        </ConsequenceComponent>
         <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>Save Rule</button>
         <hr></hr>
       </div>
@@ -882,7 +1000,7 @@ var PredicateManager = React.createClass({
       }
     }
     this.setState({step: s});
-    ReactDOM.render(<FooterInstructionComponent step={2} substep={1} r={0} />, document.getElementById('footer-instructions'));
+    ReactDOM.render(<FooterInstructionComponent step={s} substep={1} r={0} />, document.getElementById('footer-instructions'));
   },
 
   prevStep: function() {
@@ -897,7 +1015,7 @@ var PredicateManager = React.createClass({
       //this.setState({stepBtn:!this.state.stepBtn});
     }
     this.setState({step: s});
-    ReactDOM.render(<FooterInstructionComponent step={1} substep={1} r={1} />, document.getElementById('footer-instructions'));
+    ReactDOM.render(<FooterInstructionComponent step={s} substep={1} r={1} />, document.getElementById('footer-instructions'));
   },
   
   e1Click: function() { // user clicks ending 1
