@@ -97,6 +97,7 @@ $(function() {
                 }
               }
             }
+            console.log(csvOutput)
             amt.setOutput(csvOutput);
         });
     }

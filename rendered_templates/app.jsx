@@ -1,4 +1,5 @@
 var PredicateManager = window.PredicateManager;
+var FooterInstructionComponent = window.FooterInstructionComponent;
 
 /*
 Gets initial and final state for each story instance
@@ -10,6 +11,10 @@ var StoryBoard = React.createClass({
       PredicateManagers.push(React.createElement(PredicateManager));
     }
     return { PredicateManagers, i_x: 0, changeBoards: false, selectedText: ""}
+  },
+  
+  updateInstructionsOnHighlight: function() {
+    ReactDOM.render(<FooterInstructionComponent step={2} substep={1} r={3} />, document.getElementById('footer-instructions'));
   },
 
   getFinalState: function() {
@@ -47,15 +52,17 @@ Pass information from react frontend to amt.
 */
 window.app = ReactDOM.render(<StoryBoard />, document.getElementById('predicate-containers'));
 window.globalState = [];
-$('#story-container').click(function(e) {
+$('#story').click(function(e) {
   var selected_text_story = $('#story').selection().trim();
   var selected_text_ending = $('#story-ending').selection().trim();
   var selected_text_ending2 = $('#story-ending2').selection().trim();
   if(selected_text_story != '') {
     app.setState({selectedText: selected_text_story});
+    app.updateInstructionsOnHighlight();
   } else {
     if(selected_text_ending == '') {
       app.setState({selectedText: selected_text_ending2});
+      app.updateInstructionsOnHighlight();
     } else {
       app.setState({selectedText: selected_text_ending});
     }
