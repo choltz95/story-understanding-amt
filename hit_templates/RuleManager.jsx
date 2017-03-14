@@ -256,44 +256,44 @@ var ConsequenceComponent = React.createClass({ // fix 20 index button linking
       if(this.state.customSubject == true && this.state.customObject == false) {
         return(
           <span className='consequence-container' style={inlineBlock}>
-          <textarea ref='consequenceSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={this.props.consequenceSubjectDefault} style={divStyle}></textarea>
-          
-          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="15" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
-          
-          <select className='soflow' ref='consequenceObject' defaultValue={consequenceObjectDefault} onChange={this.objectChange}>
-            <option value={consequenceObjectDefault} disabled>{consequenceObjectDefault}</option>
-            <option value="someone">someone</option>
-            <option value="something">something</option>
-            <option value="somewhere">somewhere</option>
-            <option value="-">-</option>
-            <option value="customOption">[custom object]</option>
-          </select>
+            <textarea ref='consequenceSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={this.props.consequenceSubjectDefault} style={divStyle}></textarea>
+            
+            <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="15" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+            
+            <select className='soflow' ref='consequenceObject' defaultValue={consequenceObjectDefault} onChange={this.objectChange}>
+              <option value={consequenceObjectDefault} disabled>{consequenceObjectDefault}</option>
+              <option value="someone">someone</option>
+              <option value="something">something</option>
+              <option value="somewhere">somewhere</option>
+              <option value="-">-</option>
+              <option value="customOption">[custom object]</option>
+            </select>
           </span>
         );
       } else if (this.state.customSubject == false && this.state.customObject == true) {
         return(
           <span className='consequence-container' style={inlineBlock}>
-          <select className='soflow' ref='consequenceSubject' defaultValue={consequenceSubjectDefault} onChange={this.subjectChange}>
-            <option value={consequenceSubjectDefault} disabled>{consequenceSubjectDefault}</option>
-            <option value="someone">someone</option>
-            <option value="something">something</option>
-            <option value="somewhere">somewhere</option>
-            <option value="customOption">[custom object]</option>
-          </select>
-          
-          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="15" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
-          
-          <textarea ref='consequenceObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={this.props.consequenceObjectDefault} style={divStyle}></textarea>
+            <select className='soflow' ref='consequenceSubject' defaultValue={consequenceSubjectDefault} onChange={this.subjectChange}>
+              <option value={consequenceSubjectDefault} disabled>{consequenceSubjectDefault}</option>
+              <option value="someone">someone</option>
+              <option value="something">something</option>
+              <option value="somewhere">somewhere</option>
+              <option value="customOption">[custom object]</option>
+            </select>
+            
+            <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="15" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+            
+            <textarea ref='consequenceObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={this.props.consequenceObjectDefault} style={divStyle}></textarea>
           </span>
         );
       } else if (this.state.customSubject == true && this.state.customObject == true) {
         return(
           <span className='consequence-container' style={inlineBlock}>
-          <textarea ref='consequenceSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
-          
-          <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="15" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
-          
-          <textarea ref='consequenceObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={this.props.consequenceObjectDefault} style={divStyle}></textarea>
+            <textarea ref='consequenceSubject' rows="1" maxLength="50" cols="10" placeholder="subject" defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+            
+            <textarea ref='consequencePredicate' rows="1" maxLength="50" cols="15" placeholder="consequence" onChange={this.predicateChange} defaultValue={this.props.consequencePredicateDefault} style={divStyle}></textarea>
+            
+            <textarea ref='consequenceObject' rows="1" maxLength="50" cols="10" placeholder="object" defaultValue={this.props.consequenceObjectDefault} style={divStyle}></textarea>
           </span>
         );
       } else {
@@ -810,6 +810,10 @@ var RuleComponent = React.createClass({
     this.props.updatePredicate(actions, ops, consequenceSubject + " " + consequencePredicate + " " + consequenceObject, this.props.index);
     this.setState({editing: false});
   },
+  
+  resetRule: function() {
+    console.log('reset rule');
+  },
 
   addPremise: function() {
     console.log("adding premise");
@@ -851,6 +855,8 @@ var RuleComponent = React.createClass({
       btnVisibility="none";
     }
     var divStyle = { display: 'inline-block', margin: 5 };
+    var editBtnStyle = { display: 'inline-block', margin: 5, backgroundColor:'#008CBA' };
+    var removeBtnStyle = { display: 'inline-block', margin: 5, backgroundColor:'red' };
     var btnStyle = { display: btnVisibility, margin: 5};
     var font = { fontSize: 50}
 
@@ -970,8 +976,8 @@ var RuleComponent = React.createClass({
             selectedText={this.props.selectedText}
             contextLinks={this.props.contextLinks[20]}>
           </ConsequenceComponent>
-          <button onClick={this.edit} className='btn btn-xs edit-predicate-btn' style={divStyle}>Edit Rule</button>
-          <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={divStyle}>Remove Rule</button>
+          <button onClick={this.edit} className='btn btn-xs edit-predicate-btn' style={editBtnStyle}>Edit Rule</button>
+          <button onClick={this.remove} className='btn btn-xs remove-predicate-btn' style={removeBtnStyle}>Remove Rule</button>
           <hr></hr>
           </div>
           );
@@ -982,7 +988,8 @@ var RuleComponent = React.createClass({
   renderForm: function() {
     var divStyle = { display: 'inline-block', margin: 5, marginBottom: -5 };
     var inlineBlock = { marginLeft:10 };
-    var btnStyle = { display: 'inline-block', marginLeft: 5, marginRight:-10 };
+    var saveBtnStyle ={ marginLeft:10, backgroundColor:'#008CBA'  };
+    var btnStyle = { display: 'inline-block', marginLeft: 5, marginRight:-10, backgroundColor:'#4CAF50' };
     var wrapStyle = { display: 'inline-block' };
     
     var consequenceSubjectDefault = this.props.cons.split(" ")[0];
@@ -1030,7 +1037,8 @@ var RuleComponent = React.createClass({
           consequenceObjectDefault = {consequenceObjectDefault}
           contextLinks={this.props.contextLinks[20]}>
         </ConsequenceComponent>
-        <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={inlineBlock}>Save Rule</button>
+        <button onClick={this.save} className='btn btn-xs save-predicate-btn' style={saveBtnStyle}>Save</button>
+        <button onClick={this.resetRule} className='btn btn-xs save-predicate-btn' style={saveBtnStyle}>Reset</button>
         <hr></hr>
       </div>
     );
@@ -1209,7 +1217,7 @@ var PredicateManager = React.createClass({
   render: function() {
     var nextBtnStyle = { display: 'inline-block', marginRight: 10 };
     var prevBtnStyle = { display: 'inline-block', marginRight: 10 };
-    var newRuleBtnStyle = {display: 'inline-block',marginLeft: 5};
+    var newRuleBtnStyle = {display: 'inline-block',marginLeft: 5, backgroundColor: '#4CAF50'};
     var predicateStyle = {};
     if(this.state.step==0) {
       ReactDOM.render(<FooterInstructionComponent step={0} substep={1} r={1} />, document.getElementById('footer-instructions'));
