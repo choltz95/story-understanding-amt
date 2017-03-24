@@ -19,7 +19,7 @@ HIT developed with react, browser, underscore, bootstrap, some JQuery plugins.
 **amt.html**: Setup page <br />
 **index.html**: Main hit page  <br />
 **main.js**: Main js submission handler <br />
-**rcolor.js**: Random color function <br />
+**rcolor.js**: Random color function - generates random, evenly spaced colors w/ golden ratio. <br />
 **app.jsx**: Gets initial and final state from the hit and passes it to the submission handler <br />
 **RuleManager.jsx**: Hit driver <br />
 **InstructionComponent.jsx**: Primary HIT instructions template <br />
@@ -119,6 +119,11 @@ python disable_hit.py --hit_id THE_HIT_ID_YOU_WANT_TO_DISABLE
 
 #### Running production version
 To run the HIT on the production AMT site, simply append a `--prod` flag to each of the python calls in each sh script.
+
+## Notes
+Useful: https://github.com/akuznets0v/mturk-lean-external-question
+
+TODO: Describe HIT lgoic
 
 ## References
 [0] Story Cloze Evaluation Test http://research.microsoft.com/en-us/um/people/pkohli/papers/cloze_test_naacl2016.pdf <br />
