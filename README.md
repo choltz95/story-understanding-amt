@@ -14,7 +14,17 @@ Mechanical Turk Hit for collecting story completion data.
 **.sh**: Interface
 
 ### HIT layout (in /hit_templates/)
+HIT developed with react, browser, underscore, bootstrap, some JQuery plugins.
 
+**amt.html**: Setup page <br />
+**index.html**: Main hit page  <br />
+**main.js**: Main js submission handler <br />
+**rcolor.js**: Random color function <br />
+**app.jsx**: Gets initial and final state from the hit and passes it to the submission handler <br />
+**RuleManager.jsx**: Hit driver <br />
+**InstructionComponent.jsx**: Primary HIT instructions template <br />
+**FooterInstructionComponent.jsx**: Dynamic HIT instructions template <br />
+**SubHeaderInstructionComponent.jsx**: Step instructions template <br />
 
 ## Usage and instructions
 ### Testing
@@ -68,7 +78,7 @@ python get_results.py \
 ```
 
 #### Approve work
-If you are satisfied with the results that you have gotten, you can approve all completed assignments from your HIT batch by running "approve_hits.sh", which contains the following command:
+You can approve all completed assignments from your HIT batch by running "approve_hits.sh", which contains the following command:
 ```
 python approve_hits.py --hit_ids_file=tmp/hit_ids.txt
 ```
@@ -92,7 +102,7 @@ python get_all_hits.py \
 ```
 
 #### Rejecting Work
-If you are unhappy with the work done and want to reject the work, you can call the following command (please note that rejecting work harms worker's rating on the site and can influence their ability to find other work):
+If you want to reject the work, you can call the following command:
 ```
 python reject_hits.py --hit_ids_file=tmp/hit_ids.txt
 ```
